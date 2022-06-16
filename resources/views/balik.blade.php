@@ -13,9 +13,16 @@
             <center>
                 <form action="{{asset('balik')}}" class="form-horizontal" method="post" enctype="multipart/form-data">
             {{ csrf_field() }}
-            <input type="text" class="form-control" autofocus placeholder="Scan Barcode" name="rc" /><br>
-            <br><br>
+            <input type="text" class="form-control" autofocus placeholder="Scan Barcode" name="rc" />
             </center>
+        </form>
+        <hr>
+        <form action="{{asset('update_ppic_upload')}}" method="post" enctype="multipart/form-data">
+        {{ csrf_field() }}
+        <input type="file" name="update_sj_ppic">
+        <hr>
+        <input type="submit" class="btn btn-md btn-primary" value="Upload">
+        <hr>
         </form>
         </div>
     </div>

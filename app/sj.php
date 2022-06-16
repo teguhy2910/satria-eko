@@ -6,6 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class sj extends Model
 {
-    protected $table="sj";
-    protected $guarded = [];    
+    protected $guarded = [];  
 }

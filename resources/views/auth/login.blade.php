@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Login SIMPLE</title>
+    <title>Login All New SATRIA</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->  
@@ -32,10 +32,10 @@
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100">
-                <div class="login100-form-title" style="background-image: url(satria.pn);">
+                <div class="login100-form-title" style="background: url(satria.png);background-repeat: no-repeat;background-size: 100% 100%;">
                     <span class="login100-form-title-1">
                         <img src="{{asset('satria.png')}}" width="100%">
-                        <p><big><big><big><font color="blue">Serah Terima AIIA</font></big></big></big></p>
+                        
                     </span>
                 </div>
 
@@ -51,12 +51,7 @@
                         <span class="label-input100">Password</span>
                         <input class="input100" type="password" name="password" placeholder="Enter password">
                         <span class="focus-input100"></span>
-                    </div>
-
-                    <div class="flex-sb-m w-full p-b-30">
-
-                    </div>
-
+                    </div>             
                     <div class="container-login100-form-btn">
                         <button class="login100-form-btn">
                             Login

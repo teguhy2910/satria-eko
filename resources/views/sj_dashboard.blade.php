@@ -9,20 +9,22 @@
                 <li><a href={{asset("/sj_out")}}><font face="calibri" color="black"><big>Outstanding SJ > 7 Hari </big> </font> <span class="label label-success"></span></a></li>
                 </ul>
                 <div class="panel-body">
-                    @if(Auth::user()->dept == 'ppic')
+                    @if(Auth::user()->name == 'ppic')
                     <a href="{{asset("/balik")}}" class="btn btn-md btn-warning">SJ BALIK</a>
-                    <a href="{{asset("/rc")}}" class="btn btn-md btn-success">KIRIM FINANCE</a>
-                    @elseif(Auth::user()->dept == 'finance')                
-                    <a href="{{asset("/fin")}}" class="btn btn-md btn-success">FINANCE</a>
-                    <a href="{{asset("/aii")}}" class="btn btn-md btn-primary">KIRIM AII</a>
-                    @endif
+                    <a href="{{asset("/kirim_finance")}}" class="btn btn-md btn-success">KIRIM FINANCE</a>
                     <br><br>
+                    @elseif(Auth::user()->name == 'finance')                
+                    <a href="{{asset("/fin")}}" class="btn btn-md btn-success">FINANCE</a>
+                    {{-- <a href="{{asset("/aii")}}" class="btn btn-md btn-primary">KIRIM AII</a> --}}
+                    <br><br>
+                    @endif
                     @if(Session::has('message'))
                     <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+                    @elseif(Session::has('danger'))
+                    <p class="alert {{ Session::get('alert-class', 'alert-danger') }}">{{ Session::get('danger') }}</p>
                     @endif
                     <table id="sj_ppic" class="table table-bordered table-condensed table-hover dt-responsive">
-                <thead> 
-                
+                <thead>                 
                 <tr class="info">
                 <th><small>TANGGAL WAKTU UPLOAD</small></th>    
                 <th><small>TANGGAL_DELIVERY</small></th>    
@@ -33,13 +35,13 @@
                 <th><small>DOAIIA</small></th>                
                 <th><small>SJ BALIK</small></th>
                 <th><small>KIRIM FINANCE</small></th>                
-                <th><small>FINANCE</small></th>
-                <th><small>KIRIMAII</small></th>                
+                {{-- <th><small>FINANCE</small></th> --}}
+                {{-- <th><small>KIRIMAII</small></th>                 --}}
             </tr>
         </thead>        
             <tbody>
                 @foreach($data as $row)
-                @if($row->BALIK==null||$row->RECHEIPT_CHECK==null||$row->LEADER_CHECK==null||$row->FINANCE==null||$row->SUPERVISOR==null||$row->KIRIMAII==null)
+                @if($row->balik==null)
                 <tr>
                 @else
                 <tr class='success'>
@@ -52,10 +54,10 @@
                     <td>{{$row->DOAII}}</td>
                     <td>{{$row->DOAIIA}}</td>                    
                     <td>
-                        @if($row->BALIK==null)
+                        @if($row->balik==null)
                         Belum
                         @else
-                        {{$row->BALIK}}
+                        {{$row->balik}}
                         @endif
                     </td>
                     <td>
@@ -65,20 +67,20 @@
                         {{$row->RECHEIPT_CHECK}}
                         @endif
                     </td>
-                    <td>
+                    {{-- <td>
                         @if($row->FINANCE==null)
                         Belum
                         @else
                         {{$row->FINANCE}}
                         @endif
-                    </td>
-                    <td>
+                    </td> --}}
+                    {{-- <td>
                         @if($row->KIRIMAII==null)
                         Belum
                         @else
                         {{$row->KIRIMAII}}
                         @endif
-                    </td>
+                    </td> --}}
                 </tr>
                 @endforeach
             </tbody>

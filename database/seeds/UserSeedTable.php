@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
 class UserSeedTable extends Seeder
 {
     /**
@@ -13,23 +12,23 @@ class UserSeedTable extends Seeder
     {
             DB::table('users')->insert([
             'name' => 'admin',
-            'email' => 'exim@aiia.co.id',
-            'password' => bcrypt('admin'),
-            ]);
-            DB::table('users')->insert([
-            'name' => 'kasir',
-            'email' => 'kasir@aiia.co.id',
+            'email' => 'admin@aiia.co.id',
             'password' => bcrypt('admin'),
             ]);
             DB::table('users')->insert([
             'name' => 'finance',
-            'email' => 'eko@aiia.co.id',
-            'password' => bcrypt('admin'),
+            'email' => 'finance@aiia.co.id',
+            'password' => bcrypt('finance'),
             ]);
             DB::table('users')->insert([
             'name' => 'ppic',
             'email' => 'ppic@aiia.co.id',
-            'password' => bcrypt('admin'),
+            'password' => bcrypt('ppic'),
+            ]);
+            DB::table('users')->insert([
+            'name' => 'pc',
+            'email' => 'pc@aiia.co.id',
+            'password' => bcrypt('pc'),
             ]);
     }
 }

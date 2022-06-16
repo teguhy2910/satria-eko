@@ -12,7 +12,7 @@ window.Laravel = <?php echo json_encode([
 'csrfToken' => csrf_token(),
 ]); ?>
 </script>
-<title>{{ config('app.name', 'SPG') }}</title>
+<title>{{ config('app.name', 'Satria') }}</title>
 <!-- Styles -->
 <link rel="stylesheet" type="text/css" href="{{asset('css/bootstrap.min.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('css/dataTables.bootstrap.min.css')}}">
@@ -43,7 +43,7 @@ window.Laravel = <?php echo json_encode([
 </button>
 <!-- Branding Image -->
 <a class="navbar-brand" href="{{ url('/sj/dashboard') }}">
-<big>SATRIA
+<big>All New SATRIA</big>
 </a>
 </div>
 <div class="collapse navbar-collapse" id="app-navbar-collapse">
@@ -55,7 +55,7 @@ window.Laravel = <?php echo json_encode([
 @else
 <li><a href="{{asset('/sj/dashboard')}}"><font face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> SJ</font></a></li>
 <li><a href="{{asset('dashboard')}}"><font face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> Dashboard SJ</font></a></li>
-@if(Auth::user()->dept == 'ppic')
+@if(Auth::user()->name == 'ppic')
 <li><a href="{{asset('upload/sj/dashboard')}}"><font face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> Upload SJ</font></a></li>
 @endif
 @endif  
