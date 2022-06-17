@@ -15,10 +15,8 @@ class CheckLogin
      */
     public function handle($request, Closure $next)
     {
-        if (\Auth::user()->name == 'ppic' || \Auth::user()->name == 'finance' || \Auth::user()->name == 'project') {
+        if (\Auth::user()->name == 'ppic' || \Auth::user()->name == 'finance' || \Auth::user()->name == 'pc') {
             return redirect('/sj/dashboard');
-        }elseif (\Auth::user()->name == 'kasir') {
-            return redirect('/inventory/kasir');
         }
         return $next($request);
     }

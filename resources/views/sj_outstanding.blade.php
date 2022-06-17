@@ -1,4 +1,4 @@
-@extends('layouts.app3')
+@extends('layouts.app')
 @section('content')
 <div class="container-full">
     <div class="row">        
@@ -8,15 +8,7 @@
                 <li><a href="{{asset('sj/dashboard')}}"><big><font face="calibri">Surat Jalan </font></big> <span class="label label-warning"></span></a></li>
                 <li class="active"><a href={{asset("/sj_out")}}><font face="calibri" color="black"><big><big><big>Outstanding SJ > 7 Hari </big></big></big> </font> <span class="label label-success"></span></a></li>
                 </ul>
-                <div class="panel-body">
-                     @if(Auth::user()->dept == 'ppic')
-                    <a href="{{asset("/balik")}}" class="btn btn-md btn-warning">SJ BALIK</a>
-                    <a href="{{asset("/rc")}}" class="btn btn-md btn-success">RECHEIPT CHECK</a>
-                    @elseif(Auth::user()->dept == 'finance')                
-                    <a href="{{asset("/fin")}}" class="btn btn-md btn-success">FINANCE</a>
-                    <a href="{{asset("/aii")}}" class="btn btn-md btn-primary">KIRIM AII</a>
-                    @endif
-                    <br><br>
+                <div class="panel-body">                    
                     <table id="sj_ppic" class="table table-bordered table-condensed dt-responsive">
                 <thead> 
                 <tr class="info">
@@ -29,48 +21,40 @@
                 <th><small>DOAIIA</small></th>                
                 <th><small>SJ BALIK</small></th>
                 <th><small>KIRIM FINANCE</small></th>
-                <th><small>FINANCE</small></th>
-                <th><small>KIRIMAII</small></th>                
+                <th><small>FINANCE</small></th>           
             </tr>
         </thead>        
             <tbody>
                 @foreach($data as $row)
                 <tr class='success'>
                     <td>{{$row->created_at}}</td>
-                    <td>{{$row->TANGGAL_DELIVERY}}</td>
-                    <td>{{$row->CUSTOMER_NAME}}</td>
-                    <td>{{$row->CYCLE}}</td>
-                    <td>{{$row->PDSNUMBER}}</td>
-                    <td>{{$row->DOAII}}</td>
-                    <td>{{$row->DOAIIA}}</td>                    
+                    <td>{{$row->tanggal_delivery}}</td>
+                    <td>{{$row->customer_name}}</td>
+                    <td>{{$row->cycle}}</td>
+                    <td>{{$row->pdsnumber}}</td>
+                    <td>{{$row->doaii}}</td>
+                    <td>{{$row->doaiia}}</td>                    
                     <td>
-                        @if($row->BALIK==null)
+                        @if($row->sj_balik==null)
                         Belum
                         @else
-                        {{$row->BALIK}}
+                        {{$row->sj_balik}}
                         @endif
                     </td>
                     <td>
-                        @if($row->RECHEIPT_CHECK==null)
+                        @if($row->kirim_finance==null)
                         Belum
                         @else
-                        {{$row->RECHEIPT_CHECK}}
+                        {{$row->kirim_finance}}
                         @endif
                     </td>
                     <td>
-                        @if($row->FINANCE==null)
+                        @if($row->terima_finance==null)
                         Belum
                         @else
-                        {{$row->FINANCE}}
+                        {{$row->terima_finance}}
                         @endif
-                    </td>
-                    <td>
-                        @if($row->KIRIMAII==null)
-                        Belum
-                        @else
-                        {{$row->KIRIMAII}}
-                        @endif
-                    </td>
+                    </td>                    
                 </tr>
                 @endforeach
             </tbody>

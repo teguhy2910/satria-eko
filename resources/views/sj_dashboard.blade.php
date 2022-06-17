@@ -1,4 +1,4 @@
-@extends('layouts.app3')
+@extends('layouts.app')
 @section('content')
 <div class="container-full">
     <div class="row">        
@@ -6,16 +6,15 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                 <li class="active"><a class=""><big><big><big><font face="calibri">Surat Jalan </font></big></big></big> <span class="label label-warning"></span></a></li>
-                <li><a href={{asset("/sj_out")}}><font face="calibri" color="black"><big>Outstanding SJ > 7 Hari </big> </font> <span class="label label-success"></span></a></li>
+                <li><a href={{asset("/sj_outstanding")}}><font face="calibri" color="black"><big>Outstanding SJ > 7 Hari </big> </font> <span class="label label-success"></span></a></li>
                 </ul>
                 <div class="panel-body">
                     @if(Auth::user()->name == 'ppic')
-                    <a href="{{asset("/balik")}}" class="btn btn-md btn-warning">SJ BALIK</a>
+                    <a href="{{asset("/sj_balik")}}" class="btn btn-md btn-warning">SJ BALIK</a>
                     <a href="{{asset("/kirim_finance")}}" class="btn btn-md btn-success">KIRIM FINANCE</a>
                     <br><br>
                     @elseif(Auth::user()->name == 'finance')                
-                    <a href="{{asset("/fin")}}" class="btn btn-md btn-success">FINANCE</a>
-                    {{-- <a href="{{asset("/aii")}}" class="btn btn-md btn-primary">KIRIM AII</a> --}}
+                    <a href="{{asset("/terima_finance")}}" class="btn btn-md btn-success">FINANCE</a>
                     <br><br>
                     @endif
                     @if(Session::has('message'))
@@ -35,52 +34,44 @@
                 <th><small>DOAIIA</small></th>                
                 <th><small>SJ BALIK</small></th>
                 <th><small>KIRIM FINANCE</small></th>                
-                {{-- <th><small>FINANCE</small></th> --}}
-                {{-- <th><small>KIRIMAII</small></th>                 --}}
+                <th><small>FINANCE</small></th>                
             </tr>
         </thead>        
             <tbody>
                 @foreach($data as $row)
-                @if($row->balik==null)
+                @if($row->sj_balik==null)
                 <tr>
                 @else
                 <tr class='success'>
                 @endif
                     <td>{{$row->created_at}}</td>
-                    <td>{{$row->TANGGAL_DELIVERY}}</td>
-                    <td>{{$row->CUSTOMER_NAME}}</td>
-                    <td>{{$row->CYCLE}}</td>
-                    <td>{{$row->PDSNUMBER}}</td>
-                    <td>{{$row->DOAII}}</td>
-                    <td>{{$row->DOAIIA}}</td>                    
+                    <td>{{$row->tanggal_delivery}}</td>
+                    <td>{{$row->customer_name}}</td>
+                    <td>{{$row->cycle}}</td>
+                    <td>{{$row->pdsnumber}}</td>
+                    <td>{{$row->doaii}}</td>
+                    <td>{{$row->doaiia}}</td>                    
                     <td>
-                        @if($row->balik==null)
+                        @if($row->sj_balik==null)
                         Belum
                         @else
-                        {{$row->balik}}
+                        {{$row->sj_balik}}
                         @endif
                     </td>
                     <td>
-                        @if($row->RECHEIPT_CHECK==null)
+                        @if($row->kirim_finance==null)
                         Belum
                         @else
-                        {{$row->RECHEIPT_CHECK}}
+                        {{$row->kirim_finance}}
                         @endif
                     </td>
-                    {{-- <td>
-                        @if($row->FINANCE==null)
+                    <td>
+                        @if($row->terima_finance==null)
                         Belum
                         @else
-                        {{$row->FINANCE}}
+                        {{$row->terima_finance}}
                         @endif
-                    </td> --}}
-                    {{-- <td>
-                        @if($row->KIRIMAII==null)
-                        Belum
-                        @else
-                        {{$row->KIRIMAII}}
-                        @endif
-                    </td> --}}
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

@@ -1,4 +1,4 @@
-@extends('layouts.app3')
+@extends('layouts.app')
 @section('content')
 <div class="container-full">
     <div class="row">        
@@ -48,7 +48,6 @@
                 <th><small>SJ BALIK</small></th>
                 <th><small>KIRIM FINANCE</small></th>
                 <th><small>FINANCE</small></th>
-                <th><small>KIRIMAII</small></th>
                 <th><small></small></th>
 
             </tr>
@@ -63,44 +62,37 @@
                 <tr class='success'>
                 @endif
                     <td>{{$row->created_at}}</td>
-                    <td>{{$row->TANGGAL_DELIVERY}}</td>
-                    <td>{{$row->CUSTOMER_NAME}}</td>
-                    <td>{{$row->CYCLE}}</td>
-                    <td>{{$row->PDSNUMBER}}</td>
-                    <td>{{$row->DOAII}}</td>
-                    <td>{{$row->DOAIIA}}</td>                    
+                    <td>{{$row->tanggal_delivery}}</td>
+                    <td>{{$row->customer_name}}</td>
+                    <td>{{$row->cycle}}</td>
+                    <td>{{$row->pdsnumber}}</td>
+                    <td>{{$row->doaii}}</td>
+                    <td>{{$row->doaiia}}</td>                         
                     <td>
-                        @if($row->BALIK==null)
+                        @if($row->sj_balik==null)
                         Belum
                         @else
-                        {{$row->BALIK}}
+                        {{$row->sj_balik}}
                         @endif
                     </td>
                     <td>
-                        @if($row->RECHEIPT_CHECK==null)
+                        @if($row->kirim_finance==null)
                         Belum
                         @else
-                        {{$row->RECHEIPT_CHECK}}
+                        {{$row->kirim_finance}}
                         @endif
                     </td>
                     <td>
-                        @if($row->FINANCE==null)
+                        @if($row->terima_finance==null)
                         Belum
                         @else
-                        {{$row->FINANCE}}
+                        {{$row->terima_finance}}
                         @endif
-                    </td>
-                    <td>
-                        @if($row->KIRIMAII==null)
-                        Belum
-                        @else
-                        {{$row->KIRIMAII}}
-                        @endif
-                    </td>
-                    @if($row->FINANCE==null && Auth::user()->dept == 'ppic')
-                    <td><a href="{{asset('del/'.$row->PDSNUMBER)}}" class="btn btn-xs btn-danger">Del</a></td>
-                    @elseif($row->FINANCE!=null && Auth::user()->dept == 'finance')
-                    <td><a href="{{asset('del/'.$row->PDSNUMBER)}}" class="btn btn-xs btn-danger">Del</a></td>
+                    </td>                    
+                    @if($row->terima_finance==null && Auth::user()->name == 'ppic')
+                    <td><a href="{{asset('del/'.$row->doaii)}}" class="btn btn-xs btn-danger">Del</a></td>
+                    @elseif($row->terima_finance!=null && Auth::user()->name == 'finance')
+                    <td><a href="{{asset('del/'.$row->doaii)}}" class="btn btn-xs btn-danger">Del</a></td>
                     @else
                     <td></td>
                     @endif

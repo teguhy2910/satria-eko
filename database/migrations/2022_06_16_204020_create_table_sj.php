@@ -15,18 +15,15 @@ class CreateTableSj extends Migration
     {
         Schema::create('sjs', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('TANGGAL_DELIVERY');
-            $table->string('CUSTOMER_NAME');
-            $table->string('CYCLE');
-            $table->string('PDSNUMBER');
-            $table->string('DOAII');
-            $table->string('DOAIIA');
-            $table->date('LEADER_CHECK')->nullable();
-            $table->date('BALIK')->nullable();
-            $table->date('RECHEIPT_CHECK')->nullable();
-            $table->date('FINANCE')->nullable();
-            $table->date('SUPERVISOR')->nullable();
-            $table->date('KIRIMAII')->nullable();
+            $table->date('tanggal_delivery');
+            $table->string('customer_name');
+            $table->string('cycle');
+            $table->string('pdsnumber');
+            $table->string('doaii');
+            $table->string('doaiia');
+            $table->date('sj_balik')->nullable();
+            $table->date('kirim_finance')->nullable();
+            $table->date('terima_finance')->nullable();
             $table->timestamps();
         });
     }

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Input;
-use App\Http\Requests;
 use Auth;
 use DB;
 use App\sj;
 use Carbon\Carbon;
 use Excel;
+use Illuminate\Support\Facades\Session;
 
 class MainController extends Controller
 {
@@ -17,11 +17,8 @@ class MainController extends Controller
     }
     public function index()
     {
-        if (Auth::user()->name === 'admin') {
-            return redirect('/sj/dashboard');
-        }           
-    }    
-    /*SJ Controller PPIC*/
+        return redirect('/sj/dashboard');
+    }       
     public function dashboard()
     {
         $data=sj::groupBy('DOAII')->get();
@@ -36,47 +33,38 @@ class MainController extends Controller
     {
         $start_date=Carbon::now()->addDays(-7);        
         if(Auth::user()->name === 'finance'){
-            $data=sj::where('tanggal_delivery','>=',$start_date)->whereNull('RECHEIPT_CHECK')->groupBy('DOAII')->get();
+            $data=sj::where('tanggal_delivery','>=',$start_date)->whereNotNull('kirim_finance')->groupBy('doaii')->get();
         }else{
-            $data=sj::where('tanggal_delivery','>=',$start_date)->groupBy('DOAII')->whereNull('BALIK')->get();        
+            $data=sj::where('tanggal_delivery','>=',$start_date)->groupBy('doaii')->whereNull('sj_balik')->get();        
             #dd($data);
         }
         return view('sj_dashboard',compact('data'));
     }
-    public function sj_receive_fin()
-    {
-        $data = DB::table('sj')
-            ->join('sj_fin', 'sj.DOAII', '=', 'sj_fin.sj_number')
-            ->get();
-        return view('sj_r_f',compact('data'));
-    }
-    public function sj_out()
+    public function sj_outstanding()
     {
         $start_date=Carbon::now()->addDays(-7);        
-        $data=sj::where('tanggal_delivery','<=',$start_date)->groupBy('DOAII')->whereNull('BALIK')->get();
-        return view('sj_out',compact('data'));
-    }    
+        $data=sj::where('tanggal_delivery','<=',$start_date)->groupBy('doaii')->whereNull('sj_balik')->get();
+        return view('sj_outstanding',compact('data'));
+    }  
     public function upload_sj_dashboard()
     {
         return view('upload_sj_dashboard');
     }
-    public function store_upload_sj_dashboard()
-    {
-        /*Upload SJ PPIC*/
+    public function upload_sj_dashboard_store()
+    {        
         if(Input::hasFile('sj')){
             $path = Input::file('sj')->getRealPath();
-            $data = Excel::load($path, function($reader) {
-            })->get();
+            $data = Excel::load($path)->get();
             if(!empty($data) && $data->count()){
                 foreach ($data as $key => $value) {
                     $insert[] = 
                     [
-                    'TANGGAL_DELIVERY' => $value->tanggal_delivery,
-                    'CUSTOMER_NAME' => $value->customer_name,
-                    'CYCLE' => $value->cycle,
-                    'PDSNUMBER' => $value->pdsnumber,
-                    'DOAII' => $value->doaii,
-                    'DOAIIA' => $value->doaiia,
+                    'tanggal_delivery' => $value->tanggal_delivery,
+                    'customer_name' => $value->customer_name,
+                    'cycle' => $value->cycle,
+                    'pdsnumber' => $value->pdsnumber,
+                    'doaii' => $value->doaii,
+                    'doaiia' => $value->doaiia,
                     ];
                 }
                 #dd($data);
@@ -84,143 +72,198 @@ class MainController extends Controller
                     foreach($insert as $row) {
                     sj::create($row);
                     }
-                    \Session::flash('message', 'Sukses Upload SJ'); 
+                    Session::flash('message', 'Sukses Upload SJ'); 
                 }else{
-                    \Session::flash('warning', 'Gagal Upload SJ');
+                    Session::flash('danger', 'Gagal Upload SJ');
                 }
             }
         }
-        \Session::flash('message', 'Sukses Upload SJ'); 
+        Session::flash('danger', 'Something Wrong Contact Administrator'); 
         return redirect('/sj/dashboard');
     }
-    public function store_sj_update()
+    public function update_sj_balik_ppic_upload()
     {
-        /*Upload SJ Update PPIC*/
-        if(Input::hasFile('update_sj_ppic')){
-            $path = Input::file('update_sj_ppic')->getRealPath();
-            $data = Excel::load($path, function($reader) {
-            })->get();
+        if(Input::hasFile('update_sj_balik_ppic')){
+            $path = Input::file('update_sj_balik_ppic')->getRealPath();
+            $data = Excel::load($path)->get();
             if(!empty($data) && $data->count()){
                 foreach ($data as $key => $value) {
                     $insert[] = 
                     [
-                    'DOAII' => $value->doaii,
+                    'doaii' => $value->doaii,
                     ];
                 }
                 #dd($data);               
                 if(!empty($insert)){
-                    $cek=sj::where('DOAII',$insert)->whereNotNull('BALIK')->get();
+                    $cek=sj::where('doaii',$insert)->whereNotNull('sj_balik')->get();
                     if($cek->toArray()==null){
                     foreach($insert as $row) {
-                        sj::where('DOAII',$row)->update(['BALIK' =>\Carbon\Carbon::now()]);
+                        sj::where('doaii',$row)->update(['sj_balik' =>\Carbon\Carbon::now()]);
                     }
-                    \Session::flash('message', 'Sukses Upload SJ');
+                    Session::flash('message', 'Sukses Upload SJ');
                 }else{
-                    \Session::flash('danger', 'Gagal Upload SJ Sudah Balik'); 
+                    Session::flash('danger', 'Gagal Upload SJ Sudah Balik'); 
                 } 
                 }else{
-                    \Session::flash('danger', 'Gagal Upload SJ');
+                    Session::flash('danger', 'Gagal Upload SJ');
                 }
             }
         }else{
-        \Session::flash('danger', 'Something Error'); 
+        Session::flash('danger', 'Something Wrong Contact Administrator'); 
         }
         return redirect('/sj/dashboard');
     }
-    public function balik()
+    public function update_kirim_finance_ppic_upload()
     {
-        return view('balik');
-    }
-    public function balik_store()
-    {
-        if (sj::where('DOAII', $_POST['rc'])->count('PDSNUMBER')==null) {
-            \Session::flash('warning', 'Nomor PDS Salah !!!'); 
-            return redirect('/balik');
-        }elseif(sj::where('DOAII', $_POST['rc'])->count('BALIK')!=null){
-            dd(sj::where('DOAII', $_POST['rc'])->count('BALIK'));
-            \Session::flash('warning', 'SJ Sudah BALIK !!!'); 
-            return redirect('/balik');
+        if(Input::hasFile('update_kirim_finance_ppic')){
+            $path = Input::file('update_kirim_finance_ppic')->getRealPath();
+            $data = Excel::load($path)->get();
+            if(!empty($data) && $data->count()){
+                foreach ($data as $key => $value) {
+                    $insert[] = 
+                    [
+                    'doaii' => $value->doaii,
+                    ];
+                }
+                #dd($data);               
+                if(!empty($insert)){
+                    $cek=sj::where('doaii',$insert)->whereNotNull('kirim_finance')->get();
+                    if($cek->toArray()==null){
+                    foreach($insert as $row) {
+                        sj::where('doaii',$row)->update(['kirim_finance' =>\Carbon\Carbon::now()]);
+                    }
+                    Session::flash('message', 'Sukses Upload SJ');
+                }else{
+                    Session::flash('danger', 'Gagal Upload SJ Sudah Kirim Finance'); 
+                } 
+                }else{
+                    Session::flash('danger', 'Gagal Upload SJ');
+                }
+            }
         }else{
-        sj::where('DOAII', $_POST['rc'])
-             ->update(['BALIK' =>\Carbon\Carbon::now()]);
-             \Session::flash('message', 'Sukses Simpan Nomor PDS = '.$_POST['rc']); 
-             return redirect('/balik');
+        Session::flash('danger', 'Something Wrong Contact Administrator'); 
+        }
+        return redirect('/sj/dashboard');
+    }
+    public function sj_balik()
+    {
+        return view('sj_balik');
+    }
+    public function sj_balik_store()
+    {
+        if (sj::where('doaii', $_POST['doaii'])->count('pdsnumber')==null) {
+            Session::flash('danger', 'Nomor PDS Salah !!!'); 
+            return redirect('/sj_balik');
+        }elseif(sj::where('doaii', $_POST['doaii'])->count('sj_balik')!=null){
+            dd(sj::where('doaii', $_POST['doaii'])->count('sj_balik'));
+            Session::flash('danger', 'SJ Sudah BALIK !!!'); 
+            return redirect('/sj_balik');
+        }else{
+        sj::where('doaii', $_POST['doaii'])
+             ->update(['sj_balik' =>\Carbon\Carbon::now()]);
+             Session::flash('message', 'Sukses Simpan Nomor PDS = '.$_POST['doaii']); 
+             return redirect('/sj_balik');
              }
     }
     public function kirim_finance()
     {
-        return view('rc');
+        return view('kirim_finance');
     }
     public function kirim_finance_store()
     {
-        if (sj::where('DOAII', $_POST['rc'])->count('PDSNUMBER')==null) {
-            \Session::flash('warning', 'Nomor PDS Salah !!!'); 
+        if (sj::where('doaii', $_POST['doaii'])->count('pdsnumber')==null) {
+            Session::flash('warning', 'Nomor PDS Salah !!!'); 
             return redirect('/kirim_finance');
-        }elseif(sj::where('DOAII', $_POST['rc'])->count('BALIK')==null){
-            \Session::flash('warning', 'SJ Belum BALIK !!!'); 
+        }elseif(sj::where('doaii', $_POST['doaii'])->count('sj_balik')==null){
+            Session::flash('warning', 'SJ Belum BALIK !!!'); 
             return redirect('/kirim_finance');
         }else{
-        sj::where('DOAII', $_POST['rc'])
-             ->update(['RECHEIPT_CHECK' =>\Carbon\Carbon::now()]);
-             \Session::flash('message', 'Sukses Simpan Nomor PDS = '.$_POST['rc']); 
+        sj::where('doaii', $_POST['doaii'])
+             ->update(['kirim_finance' =>\Carbon\Carbon::now()]);
+             Session::flash('message', 'Sukses Simpan Nomor PDS = '.$_POST['doaii']); 
              return redirect('/kirim_finance')->with(['success' => 'Berhasil']);
          }
     }    
-    public function fin()
+    public function terima_finance()
     {
-        $data=sj::groupBy('DOAII')->get();
-        return view('fin',compact('data'));
-    }
-    public function fin_upload()
+        $data=sj::groupBy('doaii')->get();
+        return view('terima_finance',compact('data'));
+    }    
+    public function update_fin_upload()
     {
-        /*Upload SJ Fin*/
-        if(Input::hasFile('upload_sj')){
-            $path = Input::file('upload_sj')->getRealPath();
-            $data = Excel::selectSheets('SCAN AIIA')->load($path, function($reader) {
-            
-            })->get(array('scan_no_surat_jalan'));
+        if(Input::hasFile('update_fin_upload')){
+            $path = Input::file('update_fin_upload')->getRealPath();
+            $data = Excel::load($path)->get();
             if(!empty($data) && $data->count()){
-                foreach ($data as $key => $value) {                    
-                    if($value->filter()->isNotEmpty() && DB::table('sj_fin')->where('sj_number',$value->scan_no_surat_jalan)->count()<0){
+                foreach ($data as $key => $value) {
                     $insert[] = 
                     [
-                    'sj_number' => $value->scan_no_surat_jalan                                                            
+                    'doaii' => $value->doaii,
                     ];
-                    }
                 }
-                
+                #dd($data);               
                 if(!empty($insert)){
-                    DB::table('sj_fin')->insert($insert);
-                    \Session::flash('message', 'Sukses Upload SJ'); 
+                    $cek=sj::where('doaii',$insert)->whereNotNull('terima_finance')->get();
+                    if($cek->toArray()==null){
+                    foreach($insert as $row) {
+                        sj::where('doaii',$row)->update(['terima_finance' =>\Carbon\Carbon::now()]);
+                    }
+                    Session::flash('message', 'Sukses Upload SJ');
                 }else{
-                    \Session::flash('warning', 'Gagal Upload SJ');
+                    Session::flash('danger', 'Gagal Upload SJ Sudah Kirim Finance'); 
+                } 
+                }else{
+                    Session::flash('danger', 'Gagal Upload SJ');
                 }
             }
+        }else{
+        Session::flash('danger', 'Something Wrong Contact Administrator'); 
         }
-        \Session::flash('message', 'Sukses Upload SJ'); 
         return redirect('/sj/dashboard');
     }
-    public function fin_store()
+    public function terima_finance_store()
     {
-        if (sj::where('DOAII', $_POST['rc'])->count('PDSNUMBER')==null) {
-            \Session::flash('warning', 'Nomor PDS Salah !!!'); 
-            return redirect('/fin');
-        }elseif(sj::where('DOAII', $_POST['rc'])->count('BALIK')==null){
-            \Session::flash('warning', 'SJ Belum BALIK !!!'); 
-            return redirect('/fin');
-        }elseif(sj::where('DOAII', $_POST['rc'])->count('RECHEIPT_CHECK')==null){
-            \Session::flash('warning', 'SJ Belum Kirim Finance !!!'); 
-            return redirect('/fin');
-        }elseif(sj::where('DOAII', $_POST['rc'])->count('FINANCE')!=null){
-            \Session::flash('warning', 'SJ Sudah di FINANCE !!!'); 
-            return redirect('/fin');
+        if (sj::where('doaii', $_POST['doaii'])->count('pdsnumber')==null) {
+            Session::flash('danger', 'Nomor PDS Salah !!!'); 
+            return redirect('/terima_finance');
+        }elseif(sj::where('doaii', $_POST['doaii'])->count('sj_balik')==null){
+            Session::flash('danger', 'SJ Belum BALIK !!!'); 
+            return redirect('/terima_finance');
+        }elseif(sj::where('doaii', $_POST['doaii'])->count('kirim_finance')==null){
+            Session::flash('danger', 'SJ Belum Kirim Finance !!!'); 
+            return redirect('/terima_finance');
+        }elseif(sj::where('doaii', $_POST['doaii'])->count('terima_finance')!=null){
+            Session::flash('danger', 'SJ Sudah di FINANCE !!!'); 
+            return redirect('/terima_finance');
         }else{
-        sj::where('DOAII', $_POST['rc'])
-             ->update(['FINANCE' =>\Carbon\Carbon::now()]);
-             \Session::flash('message', 'Sukses Simpan Nomor PDS = '.$_POST['rc']); 
-             return redirect('/fin')->with(['success' => 'Berhasil']);
+        sj::where('doaii', $_POST['doaii'])
+             ->update(['terima_finance' =>\Carbon\Carbon::now()]);
+             Session::flash('message', 'Sukses Simpan Nomor PDS = '.$_POST['doaii']); 
+             return redirect('/terima_finance')->with(['success' => 'Berhasil']);
          }
     }    
+    
+    public function del_ppic($id)
+    {
+        sj::where('doaii',$id)->delete();
+        Session::flash('warning', 'PDS NUMBER berhasil dihapus');
+        return redirect('/dashboard');
+    }
+        // public function index()
+    // {
+    //     if (Auth::user()->name === 'admin') {
+    //         return redirect('/sj/dashboard');
+    //     }           
+    // }    
+    // public function sj_receive_fin()
+    // {
+    //     $data = DB::table('sj')
+    //         ->join('sj_fin', 'sj.DOAII', '=', 'sj_fin.sj_number')
+    //         ->get();
+    //     return view('sj_r_f',compact('data'));
+    // }
+        
+      
     // public function aii()
     // {
     //     $data=sj::groupBy('DOAII')->get();
@@ -251,10 +294,4 @@ class MainController extends Controller
     //          return redirect('/aii')->with(['success' => 'Berhasil']);
     //      }
     // }
-    public function del_ppic($id)
-    {
-        sj::where('DOAII',$id)->delete();
-        \Session::flash('warning', 'PDS NUMBER berhasil dihapus');
-        return redirect('/dashboard');
-    }
 }
