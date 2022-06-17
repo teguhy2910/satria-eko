@@ -20,7 +20,7 @@ Route::post('/update_fin_upload','MainController@update_fin_upload');
 Route::get('/del/{id}','MainController@del_ppic');
 Route::get('/filter','MainController@filter');
 Route::get('/sj_outstanding','MainController@sj_outstanding');
-Route::get('/data_sj','MainController@data_sj');
+Route::post('/data_sj','MainController@data_sj');
 // Route::get('/aii','MainController@aii');
 // Route::post('/aii','MainController@aii_store');
 // Route::get('/sj_r_f','MainController@sj_receive_fin');

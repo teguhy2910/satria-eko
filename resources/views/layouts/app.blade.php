@@ -157,7 +157,13 @@ lengthMenu: [
 ],
 processing: true,
 serverSide: true,
-ajax: '{{asset("data_sj")}}'
+ ajax: {
+            'url':'{!!url("data_sj")!!}',
+            'type': 'POST',
+            'headers': {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        }
 });
 });
 </script>
