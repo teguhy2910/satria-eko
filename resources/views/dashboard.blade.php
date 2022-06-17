@@ -35,7 +35,7 @@
                         </div>
                     </form>
                     <br><br>
-                    <table id="sj_ppic" class="table table-bordered table-condensed table-hover dt-responsive">
+                    <table id="sj_all_ppic" class="table table-bordered table-condensed table-hover dt-responsive">
                 <thead>                 
                 <tr class="info">
                 <th><small>TANGGAL WAKTU UPLOAD</small></th>    
@@ -51,56 +51,7 @@
                 <th><small></small></th>
 
             </tr>
-        </thead>        
-            <tbody>
-                @foreach($data as $row)
-                @if(\Carbon\Carbon::parse($row->TANGGAL_DELIVERY)->diffInDays(\Carbon\Carbon::parse($row->BALIK))>=7)
-                <tr class='danger'>
-                @elseif(\Carbon\Carbon::parse($row->TANGGAL_DELIVERY)->diffInDays(\Carbon\Carbon::parse($row->BALIK))>=2)
-                <tr class='warning'>
-                @else
-                <tr class='success'>
-                @endif
-                    <td>{{$row->created_at}}</td>
-                    <td>{{$row->tanggal_delivery}}</td>
-                    <td>{{$row->customer_name}}</td>
-                    <td>{{$row->cycle}}</td>
-                    <td>{{$row->pdsnumber}}</td>
-                    <td>{{$row->doaii}}</td>
-                    <td>{{$row->doaiia}}</td>                         
-                    <td>
-                        @if($row->sj_balik==null)
-                        Belum
-                        @else
-                        {{$row->sj_balik}}
-                        @endif
-                    </td>
-                    <td>
-                        @if($row->kirim_finance==null)
-                        Belum
-                        @else
-                        {{$row->kirim_finance}}
-                        @endif
-                    </td>
-                    <td>
-                        @if($row->terima_finance==null)
-                        Belum
-                        @else
-                        {{$row->terima_finance}}
-                        @endif
-                    </td>                    
-                    @if($row->terima_finance==null && Auth::user()->name == 'ppic')
-                    <td><a href="{{asset('del/'.$row->doaii)}}" class="btn btn-xs btn-danger">Del</a></td>
-                    @elseif($row->terima_finance!=null && Auth::user()->name == 'finance')
-                    <td><a href="{{asset('del/'.$row->doaii)}}" class="btn btn-xs btn-danger">Del</a></td>
-                    @else
-                    <td></td>
-                    @endif
-                    
-
-                </tr>
-                @endforeach
-            </tbody>
+        </thead>                   
             </table>
                 </div>
             </div>

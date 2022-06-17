@@ -8,6 +8,7 @@ use App\sj;
 use Carbon\Carbon;
 use Excel;
 use Illuminate\Support\Facades\Session;
+use Datatables;
 
 class MainController extends Controller
 {
@@ -15,6 +16,18 @@ class MainController extends Controller
     {
         $this->middleware('auth');
     }
+    public function data_sj()
+    {
+        $data = sj::select('created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','kirim_finance','terima_finance');        
+        return Datatables::of($data)
+        ->addColumn('action', function ($data) {
+                return '<a class="btn btn-warning btn-xs" href="#'.$data->id.'">Edit</a>
+                <a class="btn btn-danger btn-xs" href="#'.$data->id.'">Del</a>
+                ';
+            })
+        ->make();
+    }
+
     public function index()
     {
         return redirect('/sj/dashboard');

@@ -146,6 +146,23 @@ $(document).ready(function() {
 </script>
 <script type="text/javascript">
 $(document).ready(function() {
+$('#sj_all_ppic').DataTable({
+lengthMenu: [
+[ 10, 25, 50, -1 ],
+[ '10', '25', '50', 'Show all' ]
+],
+"dom": 'lBfrtip',
+"buttons": [
+'copyHtml5', 'excelHtml5', 'pdfHtml5', 'csvHtml5'
+],
+processing: true,
+serverSide: true,
+ajax: '{{asset("data_sj")}}'
+});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
 $('#sj_ppic').DataTable({
 lengthMenu: [
 [ 10, 25, 50, -1 ],
