@@ -41,6 +41,9 @@ height: 100%;
       <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
         <form method="POST" action="{{ url('/login') }}">
         {{ csrf_field() }}
+        <center>
+        <img src="img/aiia.png" alt="" srcset="">
+      </center>
           <div class="divider d-flex align-items-center my-4">
             <p class="text-center fw-bold mx-3 mb-0">All New SATRIA</p>
           </div>
