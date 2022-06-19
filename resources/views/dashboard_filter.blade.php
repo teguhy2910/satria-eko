@@ -18,8 +18,7 @@
                         <a href="" class="btn btn-md btn-warning">Over Due Date 2 Days</a>
                         <a href="" class="btn btn-md btn-danger">Over Due Date 7 Days</a>
                     </div> -->
-                    <form method='post' action='{{asset('filter_view')}}' class="pull-right">                    
-                    {{ csrf_field() }}
+                    <!-- <form method='get' action='{{asset('filter')}}' class="pull-right">
                         <div class='row'>
                         <div class='col-md-4'>
                         <label>FROM</label>
@@ -35,10 +34,11 @@
                         </div>
                         </div>
                     </form>
-                    <br><br>
-                    <table id="sj_all_ppic" class="table table-bordered table-condensed table-hover dt-responsive">
-                <thead>                 
-                <tr class="info">
+                    <br><br> -->
+                    <table id="sj_filter" class="table table-bordered table-condensed table-hover dt-responsive">
+                <thead>          
+                       
+                <tr class="info">                
                 <th><small>ID</small></th>    
                 <th><small>TANGGAL WAKTU UPLOAD</small></th>    
                 <th><small>TANGGAL_DELIVERY</small></th>    
@@ -50,10 +50,24 @@
                 <th><small>SJ BALIK</small></th>
                 <th><small>KIRIM FINANCE</small></th>
                 <th><small>FINANCE</small></th>
-                <th><small></small></th>
-
-            </tr>
-        </thead>                   
+                </tr>
+                </thead> 
+                @foreach($data as $row)
+                <tr>
+                <td>{{$row->id}}</td>
+                <td>{{$row->created_at}}</td>
+                <td>{{$row->tanggal_delivery}}</td>
+                <td>{{$row->customer_name}}</td>
+                <td>{{$row->cycle}}</td>
+                <td>{{$row->pdsnumber}}</td>
+                <td>{{$row->doaii}}</td>
+                <td>{{$row->doaiia}}</td>
+                <td>{{$row->sj_balik}}</td>
+                <td>{{$row->kirim_finance}}</td>
+                <td>{{$row->terima_finance}}</td>
+                </tr>
+                @endforeach
+                          
             </table>
                 </div>
             </div>

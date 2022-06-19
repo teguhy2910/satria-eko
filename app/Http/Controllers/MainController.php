@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Excel;
 use Illuminate\Support\Facades\Session;
 use Datatables;
+use Illuminate\Http\Request;
 
 class MainController extends Controller
 {
@@ -18,46 +19,62 @@ class MainController extends Controller
     }
     public function data_sj()
     {
-        $data = sj::select('created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','kirim_finance','terima_finance');        
+        $data = sj::select('id','created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','kirim_finance','terima_finance');        
         return Datatables::of($data)
         ->addColumn('action', function ($data) {
-                return '<a class="btn btn-warning btn-xs" href="#'.$data->id.'">Edit</a>
-                <a class="btn btn-danger btn-xs" href="#'.$data->id.'">Del</a>
+                return '<a class="btn btn-warning btn-xs" href="edit_sj/'.$data->id.'">Edit</a>
+                <a class="btn btn-danger btn-xs" href="delete_sj/'.$data->id.'">Del</a>
                 ';
             })
         ->make();
     }
-
+    public function data_outstanding_sj()
+    {
+        $start_date=Carbon::now()->addDays(-7);        
+        if(Auth::user()->name === 'finance'){
+            $data=sj::select('created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','kirim_finance','terima_finance')->where('tanggal_delivery','>=',$start_date)->whereNull('terima_finance')->groupBy('doaii');
+        }else{
+            $data=sj::select('created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','kirim_finance','terima_finance')->where('tanggal_delivery','>=',$start_date)->groupBy('doaii')->whereNull('sj_balik');                    
+        }                
+        return Datatables::of($data)->make();
+    }
+    public function data_outstanding_sj_7_day()
+    {
+        $start_date=Carbon::now()->addDays(-7);        
+        $data=sj::select('created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','kirim_finance','terima_finance')->where('tanggal_delivery','<=',$start_date)->groupBy('doaii')->whereNull('sj_balik');
+        return Datatables::of($data)->make();
+    }    
     public function index()
     {
         return redirect('/sj/dashboard');
     }       
     public function dashboard()
     {
-        $data=sj::groupBy('DOAII')->get();
-        return view('dashboard',compact('data'));
+        // $data=sj::groupBy('doaii')->get();
+        return view('dashboard');
     }
-    public function filter()
+    public function filter_view()
     {
-        $data=sj::whereBetween('TANGGAL_DELIVERY',[$_GET['from'],$_GET['to']])->groupBy('DOAII')->get();
-        return view('dashboard',compact('data'));
+        $data=sj::whereBetween('tanggal_delivery',[$_POST['from'],$_POST['to']])->groupBy('doaii')->get();
+        return view('dashboard_filter',compact('data'));
     }
     public function sj_dashboard()
     {
-        $start_date=Carbon::now()->addDays(-7);        
-        if(Auth::user()->name === 'finance'){
-            $data=sj::where('tanggal_delivery','>=',$start_date)->whereNotNull('kirim_finance')->groupBy('doaii')->get();
-        }else{
-            $data=sj::where('tanggal_delivery','>=',$start_date)->groupBy('doaii')->whereNull('sj_balik')->get();        
-            #dd($data);
-        }
-        return view('sj_dashboard',compact('data'));
+        // $start_date=Carbon::now()->addDays(-7);        
+        // if(Auth::user()->name === 'finance'){
+        //     $data=sj::where('tanggal_delivery','>=',$start_date)->whereNull('terima_finance')->groupBy('doaii')->get();
+        //     #dd($data);
+        // }else{
+        //     $data=sj::where('tanggal_delivery','>=',$start_date)->groupBy('doaii')->whereNull('sj_balik')->get();        
+        //     #dd($data);
+        // }
+        return view('sj_dashboard');
     }
     public function sj_outstanding()
     {
-        $start_date=Carbon::now()->addDays(-7);        
-        $data=sj::where('tanggal_delivery','<=',$start_date)->groupBy('doaii')->whereNull('sj_balik')->get();
-        return view('sj_outstanding',compact('data'));
+        // $start_date=Carbon::now()->addDays(-7);        
+        // $data=sj::where('tanggal_delivery','<=',$start_date)->groupBy('doaii')->whereNull('sj_balik')->get();
+        return view('sj_outstanding');
     }  
     public function upload_sj_dashboard()
     {
@@ -164,11 +181,10 @@ class MainController extends Controller
     }
     public function sj_balik_store()
     {
-        if (sj::where('doaii', $_POST['doaii'])->count('pdsnumber')==null) {
+        if (sj::where('doaii', $_POST['doaii'])->count('doaii')==null) {
             Session::flash('danger', 'Nomor PDS Salah !!!'); 
             return redirect('/sj_balik');
         }elseif(sj::where('doaii', $_POST['doaii'])->count('sj_balik')!=null){
-            dd(sj::where('doaii', $_POST['doaii'])->count('sj_balik'));
             Session::flash('danger', 'SJ Sudah BALIK !!!'); 
             return redirect('/sj_balik');
         }else{
@@ -177,6 +193,7 @@ class MainController extends Controller
              Session::flash('message', 'Sukses Simpan Nomor PDS = '.$_POST['doaii']); 
              return redirect('/sj_balik');
              }
+        
     }
     public function kirim_finance()
     {
@@ -258,53 +275,19 @@ class MainController extends Controller
     
     public function del_ppic($id)
     {
-        sj::where('doaii',$id)->delete();
+        sj::where('id',$id)->delete();
         Session::flash('warning', 'PDS NUMBER berhasil dihapus');
         return redirect('/dashboard');
     }
-        // public function index()
-    // {
-    //     if (Auth::user()->name === 'admin') {
-    //         return redirect('/sj/dashboard');
-    //     }           
-    // }    
-    // public function sj_receive_fin()
-    // {
-    //     $data = DB::table('sj')
-    //         ->join('sj_fin', 'sj.DOAII', '=', 'sj_fin.sj_number')
-    //         ->get();
-    //     return view('sj_r_f',compact('data'));
-    // }
-        
-      
-    // public function aii()
-    // {
-    //     $data=sj::groupBy('DOAII')->get();
-    //     return view('kaii',compact('data'));
-    // }
-    // public function aii_store()
-    // {
-    //     if (DB::table('sj')->where('DOAII', $_POST['rc'])->count('PDSNUMBER')==null) {
-    //         \Session::flash('warning', 'Nomor PDS Salah !!!'); 
-    //         return redirect('/aii');
-    //     }elseif(DB::table('sj')->where('DOAII', $_POST['rc'])->count('BALIK')==null){
-    //         \Session::flash('warning', 'SJ Belum BALIK !!!'); 
-    //         return redirect('/aii');
-    //     }elseif(DB::table('sj')->where('DOAII', $_POST['rc'])->count('RECHEIPT_CHECK')==null){
-    //         \Session::flash('warning', 'SJ Belum RECHEIPT_CHECK !!!'); 
-    //         return redirect('/aii');
-    //     }elseif(DB::table('sj')->where('DOAII', $_POST['rc'])->count('FINANCE')==null){
-    //         \Session::flash('warning', 'SJ Belum di FINANCE !!!'); 
-    //         return redirect('/aii');
-    //     }elseif(DB::table('sj')->where('DOAII', $_POST['rc'])->count('KIRIMAII')!=null){
-    //         \Session::flash('warning', 'SJ Sudah kirim AII !!!'); 
-    //         return redirect('/aii');        
-    //     }else{
-    //     DB::table('sj')
-    //         ->where('DOAII', $_POST['rc'])
-    //          ->update(['KIRIMAII' =>\Carbon\Carbon::now()]);
-    //          \Session::flash('message', 'Sukses Simpan Nomor PDS = '.$_POST['rc']); 
-    //          return redirect('/aii')->with(['success' => 'Berhasil']);
-    //      }
-    // }
+    public function sj_update($id)
+    {
+        $data=sj::where('id',$id)->first();
+        return view('sj_update',compact('data'));
+    }
+    public function sj_update_store($id)
+    {
+        sj::where('id',$id)->update(request()->except(['_token']));
+        Session::flash('warning', 'Data berhasil dirubah');
+        return redirect('dashboard');
+    }     
 }

@@ -9,7 +9,7 @@
                 <li><a href={{asset("/sj_outstanding")}}><font face="calibri" color="black"><big>Outstanding SJ > 7 Hari </big> </font> <span class="label label-success"></span></a></li>
                 </ul>
                 <div class="panel-body">
-                    @if(Auth::user()->name == 'ppic')
+                    @if(Auth::user()->name == 'ppic' || Auth::user()->name == 'pc')
                     <a href="{{asset("/sj_balik")}}" class="btn btn-md btn-warning">SJ BALIK</a>
                     <a href="{{asset("/kirim_finance")}}" class="btn btn-md btn-success">KIRIM FINANCE</a>
                     <br><br>
@@ -36,45 +36,7 @@
                 <th><small>KIRIM FINANCE</small></th>                
                 <th><small>FINANCE</small></th>                
             </tr>
-        </thead>        
-            <tbody>
-                @foreach($data as $row)
-                @if($row->sj_balik==null)
-                <tr>
-                @else
-                <tr class='success'>
-                @endif
-                    <td>{{$row->created_at}}</td>
-                    <td>{{$row->tanggal_delivery}}</td>
-                    <td>{{$row->customer_name}}</td>
-                    <td>{{$row->cycle}}</td>
-                    <td>{{$row->pdsnumber}}</td>
-                    <td>{{$row->doaii}}</td>
-                    <td>{{$row->doaiia}}</td>                    
-                    <td>
-                        @if($row->sj_balik==null)
-                        Belum
-                        @else
-                        {{$row->sj_balik}}
-                        @endif
-                    </td>
-                    <td>
-                        @if($row->kirim_finance==null)
-                        Belum
-                        @else
-                        {{$row->kirim_finance}}
-                        @endif
-                    </td>
-                    <td>
-                        @if($row->terima_finance==null)
-                        Belum
-                        @else
-                        {{$row->terima_finance}}
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
+        </thead>                    
             </table>
                 </div>
             </div>

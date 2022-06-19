@@ -22,13 +22,13 @@ window.Laravel = <?php echo json_encode([
 <link rel="stylesheet" type="text/css" href="{{asset('/css/AdminLTE.min.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('/css/navigasi.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('css/sweetalert.css')}}">
-<script src="http://momentjs.com/downloads/moment.min.js"></script>
+<!-- <script src="http://momentjs.com/downloads/moment.min.js"></script> -->
 </head>
 <body>
     <style type="text/css">
         body {
-           background-image: url("img/bg1.jpeg");
-           background-color: #cccccc;
+           /* background-image: url("img/bg1.jpeg"); */
+           background-color: #348feb;
         }
     </style>
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -43,7 +43,7 @@ window.Laravel = <?php echo json_encode([
 </button>
 <!-- Branding Image -->
 <a class="navbar-brand" href="{{ url('/sj/dashboard') }}">
-<big>All New SATRIA</big>
+<big><font color="white">All New SATRIA</font></big>
 </a>
 </div>
 <div class="collapse navbar-collapse" id="app-navbar-collapse">
@@ -53,10 +53,10 @@ window.Laravel = <?php echo json_encode([
 &nbsp;
 @if (Auth::guest())
 @else
-<li><a href="{{asset('/sj/dashboard')}}"><font face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> SJ</font></a></li>
-<li><a href="{{asset('dashboard')}}"><font face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> Dashboard SJ</font></a></li>
-@if(Auth::user()->name == 'ppic')
-<li><a href="{{asset('upload/sj/dashboard')}}"><font face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> Upload SJ</font></a></li>
+<li><a href="{{asset('/sj/dashboard')}}"><font color="white" face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> SJ On Progress</font></a></li>
+<li><a href="{{asset('dashboard')}}"><font color="white" face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> ALL SJ</font></a></li>
+@if(Auth::user()->name == 'ppic' || Auth::user()->name == 'pc')
+<li><a href="{{asset('upload/sj/dashboard')}}"><font color="white" face="calibri" size="3px"><i class="fa fa-file-text" aria-hidden="true"></i> Upload SJ</font></a></li>
 @endif
 @endif  
 </ul>
@@ -68,7 +68,7 @@ window.Laravel = <?php echo json_encode([
 @if (Auth::guest())                        
 @else 
 
-<li><a aria-expanded="false">Welcome {{ Auth::user()->name }}</a>
+<li><a aria-expanded="false"><font color="white">Welcome {{ Auth::user()->name }}</font></a>
 </li>
 <li>
 <a href="{{ url('/logout') }}"
@@ -110,7 +110,7 @@ document.getElementById('logout-form').submit();">
 <!-- Include this after the sweet alert js file -->
 @include('sweet::alert')
 <!-- Data Table Script -->
-<script>
+<!-- <script>
 /*$.fn.editable.defaults.mode = 'inline';*/
 $(document).ready(function() {	
     $('.testEdit').editable({
@@ -143,6 +143,9 @@ $(document).ready(function() {
           $("#a").focus();
       }, 100);
    });
+</script> -->
+<script>
+     $("input:text:visible:first").focus();
 </script>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -157,7 +160,7 @@ lengthMenu: [
 ],
 processing: true,
 serverSide: true,
- ajax: {
+ajax: {
             'url':'{!!url("data_sj")!!}',
             'type': 'POST',
             'headers': {
@@ -170,6 +173,52 @@ serverSide: true,
 <script type="text/javascript">
 $(document).ready(function() {
 $('#sj_ppic').DataTable({
+lengthMenu: [
+[ 10, 25, 50, -1 ],
+[ '10', '25', '50', 'Show all' ]
+],
+"dom": 'lBfrtip',
+"buttons": [
+'copyHtml5', 'excelHtml5', 'pdfHtml5', 'csvHtml5'
+],
+processing: true,
+serverSide: true,
+ajax: {
+            'url':'{!!url("data_outstanding_sj")!!}',
+            'type': 'POST',
+            'headers': {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        }
+});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#sj_ppic_more_7_days').DataTable({
+lengthMenu: [
+[ 10, 25, 50, -1 ],
+[ '10', '25', '50', 'Show all' ]
+],
+"dom": 'lBfrtip',
+"buttons": [
+'copyHtml5', 'excelHtml5', 'pdfHtml5', 'csvHtml5'
+],
+processing: true,
+serverSide: true,
+ajax: {
+            'url':'{!!url("data_outstanding_sj_7_day")!!}',
+            'type': 'POST',
+            'headers': {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        }
+});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#sj_filter').DataTable({
 lengthMenu: [
 [ 10, 25, 50, -1 ],
 [ '10', '25', '50', 'Show all' ]
