@@ -48,7 +48,6 @@
                 <th><small>DOAII</small></th>
                 <th><small>DOAIIA</small></th>                
                 <th><small>SJ BALIK</small></th>
-                <th><small>KIRIM FINANCE</small></th>
                 <th><small>FINANCE</small></th>
                 </tr>
                 </thead> 
@@ -63,7 +62,6 @@
                 <td>{{$row->doaii}}</td>
                 <td>{{$row->doaiia}}</td>
                 <td>{{$row->sj_balik}}</td>
-                <td>{{$row->kirim_finance}}</td>
                 <td>{{$row->terima_finance}}</td>
                 </tr>
                 @endforeach

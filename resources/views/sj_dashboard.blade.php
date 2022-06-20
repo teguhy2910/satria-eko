@@ -11,7 +11,7 @@
                 <div class="panel-body">
                     @if(Auth::user()->name == 'ppic' || Auth::user()->name == 'pc')
                     <a href="{{asset("/sj_balik")}}" class="btn btn-md btn-warning">SJ BALIK</a>
-                    <a href="{{asset("/kirim_finance")}}" class="btn btn-md btn-success">KIRIM FINANCE</a>
+                    <!-- <a href="{{asset("/kirim_finance")}}" class="btn btn-md btn-success">KIRIM FINANCE</a> -->
                     <br><br>
                     @elseif(Auth::user()->name == 'finance')                
                     <a href="{{asset("/terima_finance")}}" class="btn btn-md btn-success">FINANCE</a>
@@ -33,7 +33,7 @@
                 <th><small>DOAII</small></th>
                 <th><small>DOAIIA</small></th>                
                 <th><small>SJ BALIK</small></th>
-                <th><small>KIRIM FINANCE</small></th>                
+                <!-- <th><small>KIRIM FINANCE</small></th>                 -->
                 <th><small>FINANCE</small></th>                
             </tr>
         </thead>                    

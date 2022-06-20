@@ -1,4 +1,5 @@
 <title>All New SATRIA</title>
+
 <!-- Font Awesome -->
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -34,7 +35,7 @@ height: 100%;
 <section class="vh-100">
   <div class="container-fluid h-custom">
     <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-md-9 col-lg-6 col-xl-5">
+      <div class="col-md-9 col-lg-6 col-xl-5">        
         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
           class="img-fluid" alt="Sample image">
       </div>
@@ -42,9 +43,9 @@ height: 100%;
         <form method="POST" action="{{ url('/login') }}">
         {{ csrf_field() }}
         <center>
-        <img src="img/aiia.png" alt="" srcset="">
-      </center>
-          <div class="divider d-flex align-items-center my-4">
+        <img src="img/aiia.png" width="100px" alt=""> 
+        </center> 
+        <div class="divider d-flex align-items-center my-4">          
             <p class="text-center fw-bold mx-3 mb-0">All New SATRIA</p>
           </div>
 
