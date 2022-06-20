@@ -21,9 +21,8 @@ class CreateTableSj extends Migration
             $table->string('pdsnumber');
             $table->string('doaii');
             $table->string('doaiia');
-            $table->date('sj_balik')->nullable();
-            $table->date('kirim_finance')->nullable();
-            $table->date('terima_finance')->nullable();
+            $table->datetime('sj_balik')->nullable();
+            $table->datetime('terima_finance')->nullable();
             $table->timestamps();
         });
     }
