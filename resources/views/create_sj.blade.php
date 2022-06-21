@@ -11,14 +11,10 @@
         <input type="date" class="form-control" name="tanggal_delivery" />
         <label for="">Customer Name</label>
         <input type="text" class="form-control" name="customer_name" />
-        <label for="">Cycle</label>
-        <input type="number" class="form-control" name="cycle" />
         <label for="">PDS Number</label>
         <input type="text" class="form-control" name="pdsnumber" />
         <label for="">DO AII</label>
         <input type="text" class="form-control" name="doaii" />
-        <label for="">DO AIIA</label>
-        <input type="text" class="form-control" name="doaiia" />
         <br>
         <input type="submit" value="Create" class="btn btn-md btn-success">
         <br> <hr>

@@ -19,7 +19,7 @@ class MainController extends Controller
     }
     public function data_sj()
     {
-        $data = sj::select('id','created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','terima_finance');        
+        $data = sj::select('id','created_at','tanggal_delivery','customer_name','pdsnumber','doaii','sj_balik','terima_finance')->groupBy('doaii');        
         return Datatables::of($data)
         ->addColumn('action', function ($data) {
                 return '<a class="btn btn-warning btn-xs" href="edit_sj/'.$data->id.'">Edit</a>
@@ -32,16 +32,16 @@ class MainController extends Controller
     {
         $start_date=Carbon::now()->addDays(-7);        
         if(Auth::user()->name === 'finance'){
-            $data=sj::select('created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','terima_finance')->where('tanggal_delivery','>=',$start_date)->whereNull('terima_finance')->groupBy('doaii');
+            $data=sj::select('created_at','tanggal_delivery','customer_name','pdsnumber','doaii','sj_balik','terima_finance')->where('tanggal_delivery','>=',$start_date)->whereNull('terima_finance')->groupBy('doaii');
         }else{
-            $data=sj::select('created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','terima_finance')->where('tanggal_delivery','>=',$start_date)->groupBy('doaii')->whereNull('sj_balik');                    
+            $data=sj::select('created_at','tanggal_delivery','customer_name','pdsnumber','doaii','sj_balik','terima_finance')->where('tanggal_delivery','>=',$start_date)->groupBy('doaii')->whereNull('sj_balik');                    
         }                
         return Datatables::of($data)->make();
     }
     public function data_outstanding_sj_7_day()
     {
         $start_date=Carbon::now()->addDays(-7);        
-        $data=sj::select('created_at','tanggal_delivery','customer_name','cycle','pdsnumber','doaii','doaiia','sj_balik','terima_finance')->where('tanggal_delivery','<=',$start_date)->groupBy('doaii')->whereNull('sj_balik');
+        $data=sj::select('created_at','tanggal_delivery','customer_name','pdsnumber','doaii','sj_balik','terima_finance')->where('tanggal_delivery','<=',$start_date)->groupBy('doaii')->whereNull('sj_balik');
         return Datatables::of($data)->make();
     }    
     public function index()
@@ -80,18 +80,14 @@ class MainController extends Controller
                     [
                     'tanggal_delivery' => $value->tanggal_delivery,
                     'customer_name' => $value->customer_name,
-                    'cycle' => $value->cycle,
                     'pdsnumber' => $value->pdsnumber,
-                    'doaii' => $value->doaii,
-                    'doaiia' => $value->doaiia,
+                    'doaii' => $value->doaii,                    
                     ];
                 }
-                #dd($insert[0]);
+                #dd($insert);
                 if(!empty($insert)){
                     foreach($insert as $row) {
-                    if($row['tanggal_delivery']!=null){
                     sj::create($row);
-                    }
                     }
                     Session::flash('message', 'Sukses Upload SJ'); 
                 }else{
@@ -206,7 +202,7 @@ class MainController extends Controller
     public function sj_update_store($id)
     {
         sj::where('id',$id)->update(request()->except(['_token']));
-        Session::flash('warning', 'Data berhasil dirubah');
+        Session::flash('warning', 'EDIT data BERHASIL Bro');
         return redirect('dashboard');
     }     
     public function create_sj()
@@ -216,6 +212,6 @@ class MainController extends Controller
     public function create_sj_store()
     {
         sj::create(request()->all());
-        return redirect('sj/dashboard');
+        redirect('create/sj');
     }
 }

@@ -22,6 +22,20 @@ window.Laravel = <?php echo json_encode([
 <link rel="stylesheet" type="text/css" href="{{asset('/css/AdminLTE.min.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('/css/navigasi.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('css/sweetalert.css')}}">
+<!-- <script src="http://momentjs.com/downloads/moment.min.js"></script> -->
+<style>
+  .btn2 {
+  border: 2px solid white;
+  background-color: #348feb;
+  color: white;
+  padding: 5px 5px;
+  margin-top:-10px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+</style>
 </head>
 <body>
     <style type="text/css">
@@ -55,8 +69,10 @@ window.Laravel = <?php echo json_encode([
 <li><a href="{{asset('/sj/dashboard')}}"><font color="white" face="calibri" size="3px"> SJ On Progress</font></a></li>
 <li><a href="{{asset('dashboard')}}"><font color="white" face="calibri" size="3px"> ALL SJ</font></a></li>
 @if(Auth::user()->name == 'ppic' || Auth::user()->name == 'pc')
-<li><a href="{{asset('upload/sj/dashboard')}}"><font color="white" face="calibri" size="3px"> Upload SJ</font></a></li>
-<li><a href="{{asset('create/sj')}}"><font color="white" face="calibri" size="3px"> Create SJ</font></a></li>
+<li><a href="{{asset('upload/sj/dashboard')}}"><font color="white" face="calibri" size="3px"> 
+<button class="btn2">Upload SJ</button></font></a>
+</li>
+<li><a href="{{asset('create/sj')}}"><font color="white" face="calibri" size="3px"><button class="btn2">Create SJ</button></font></a></li>
 @endif
 @endif  
 </ul>
@@ -104,11 +120,46 @@ document.getElementById('logout-form').submit();">
 <script type="text/javascript" src="{{asset('js/buttons.colVis.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/Chart.bundle.min.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/sweetalert.min.js')}}"></script>
-<script type="text/javascript" src="{{asset('js/jszip.min.js')}}"></script>
-<link href="{{asset('css/bootstrap-editable.css')}}" rel="stylesheet"/>
-<script src="{{asset('js/bootstrap-editable.min.js')}}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <!-- Include this after the sweet alert js file -->
 @include('sweet::alert')
+<!-- Data Table Script -->
+<!-- <script>
+/*$.fn.editable.defaults.mode = 'inline';*/
+$(document).ready(function() {	
+    $('.testEdit').editable({
+        params: function(params) {
+            // add additional params from data-attributes of trigger element
+            params._token = $("#_token").data("token");
+            params.name = $(this).editable().data('name');
+            return params;
+        },
+        error: function(response, newValue) {
+            if(response.status === 500) {
+                return 'Server error. Check entered data.';
+            } else {
+                return response.responseText;
+                // return "Error.";
+            }
+        }
+    });
+  $("#import .editable:visible").on('hidden', function (e, reason) {
+    if (reason === 'save' || reason === 'nochange') {
+        var that = this;
+        $("#import .editable:visible").eq($("#import .editable:visible").index(that) + 1).editable('show');
+    }
+  });
+});
+</script>
+<script type="text/javascript">
+   $(document).ready(function() {
+      setTimeout(function() {
+          $("#a").focus();
+      }, 100);
+   });
+</script> -->
 <script>
      $("input:text:visible:first").focus();
 </script>

@@ -15,10 +15,8 @@
                 <th><small>TANGGAL WAKTU UPLOAD</small></th>    
                 <th><small>TANGGAL_DELIVERY</small></th>    
                 <th><small>CUSTOMER_NAME</small></th>
-                <th><small>CYCLE</small></th>
                 <th><small>PDSNUMBER</small></th>
                 <th><small>DOAII</small></th>
-                <th><small>DOAIIA</small></th>                
                 <th><small>SJ BALIK</small></th>
                 <th><small>FINANCE</small></th>           
             </tr>

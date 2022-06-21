@@ -11,14 +11,10 @@
         <input type="date" class="form-control" value="{{$data->tanggal_delivery}}" name="tanggal_delivery" />
         <label for="">Customer Name</label>
         <input type="text" class="form-control" value="{{$data->customer_name}}" name="customer_name" />
-        <label for="">Cycle</label>
-        <input type="number" class="form-control" value="{{$data->cycle}}" name="cycle" />
         <label for="">PDS Number</label>
         <input type="text" class="form-control" value="{{$data->pdsnumber}}" name="pdsnumber" />
         <label for="">DO AII</label>
         <input type="text" class="form-control" value="{{$data->doaii}}" name="doaii" />
-        <label for="">DO AIIA</label>
-        <input type="text" class="form-control" value="{{$data->doaiia}}" name="doaiia" />
         <br>
         <input type="submit" value="EDIT" class="btn btn-md btn-success">
         <br> <hr>

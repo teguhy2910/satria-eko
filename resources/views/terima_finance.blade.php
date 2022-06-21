@@ -21,7 +21,7 @@
         {{ csrf_field() }}
         <input type="file" name="update_fin_upload">
         <hr>
-        <input type="submit" class="btn btn-md btn-primary" value="Upload">
+        <input type="submit" class="btn btn-md btn-warning" value="Upload Data Scan">
         <hr>
         </form>
         </div>

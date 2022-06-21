@@ -17,12 +17,10 @@ class CreateTableSj extends Migration
             $table->increments('id');
             $table->date('tanggal_delivery');
             $table->string('customer_name');
-            $table->string('cycle');
             $table->string('pdsnumber');
             $table->string('doaii');
-            $table->string('doaiia');
-            $table->datetime('sj_balik')->nullable();
-            $table->datetime('terima_finance')->nullable();
+            $table->date('sj_balik')->nullable();
+            $table->date('terima_finance')->nullable();
             $table->timestamps();
         });
     }

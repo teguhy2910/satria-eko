@@ -7,7 +7,7 @@
             <center><form action="{{asset('upload/sj/dashboard')}}" class="form-horizontal" method="post" enctype="multipart/form-data">
 			{{ csrf_field() }}
 			<input type="file" name="sj" /><br>
-			<button class="btn btn-primary">Proses</button>
+			<button class="btn btn-warning">Proses</button>
 			<br><br>
 			</center>
 		</form>
