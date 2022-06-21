@@ -87,7 +87,9 @@ class MainController extends Controller
                 #dd($insert);
                 if(!empty($insert)){
                     foreach($insert as $row) {
+                    if($row['tanggal_delivery']!=null){
                     sj::create($row);
+                    }
                     }
                     Session::flash('message', 'Sukses Upload SJ'); 
                 }else{
