@@ -91,7 +91,8 @@ class MainController extends Controller
                     sj::create($row);
                     }
                     }
-                    Session::flash('message', 'Sukses Upload SJ'); 
+$total_upload="Sukses Upload SJ, Total Upload=".count($insert)." Data";
+                    Session::flash('message',$total_upload ); 
                 }else{
                     Session::flash('danger', 'Gagal Upload SJ');
                 }
@@ -119,7 +120,9 @@ class MainController extends Controller
                     foreach($insert as $row) {
                         sj::where('doaii',$row)->update(['sj_balik' =>\Carbon\Carbon::now()]);
                     }
-                    Session::flash('message', 'Sukses Upload SJ');
+$total_upload="Sukses Upload SJ, Total Upload=".count($insert)." Data";
+                    Session::flash('message',$total_upload );
+                    #Session::flash('message', 'Sukses Upload SJ');
                 }else{
                     Session::flash('danger', 'Gagal Upload SJ Sudah Balik'); 
                 } 
@@ -174,7 +177,9 @@ class MainController extends Controller
                     foreach($insert as $row) {
                         sj::where('doaii',$row)->update(['terima_finance' =>\Carbon\Carbon::now()]);                     
                 }
-Session::flash('message', 'Sukses Upload SJ');
+$total_upload="Sukses Upload SJ, Total Upload=".count($insert)." Data";
+                    Session::flash('message',$total_upload );
+#Session::flash('message', 'Sukses Upload SJ');
 }else{
                     Session::flash('danger', 'Gagal Upload SJ');
                 }
