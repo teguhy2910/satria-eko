@@ -173,7 +173,9 @@ class MainController extends Controller
                 if(!empty($insert)){
                     foreach($insert as $row) {
                         sj::where('doaii',$row)->update(['terima_finance' =>\Carbon\Carbon::now()]);                     
-                }}else{
+                }
+Session::flash('message', 'Sukses Upload SJ');
+}else{
                     Session::flash('danger', 'Gagal Upload SJ');
                 }
             }
