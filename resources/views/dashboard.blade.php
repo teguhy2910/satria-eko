@@ -14,10 +14,13 @@
                 <li class="active"><a class=""><big><big><big><font face="calibri">Surat Jalan </font></big></big></big> <span class="label label-warning"></span></a></li>
                 </ul>
                 <div class="panel-body">
-                    <!-- <div>
-                        <a href="" class="btn btn-md btn-warning">Over Due Date 2 Days</a>
-                        <a href="" class="btn btn-md btn-danger">Over Due Date 7 Days</a>
-                    </div> -->
+                    @if(Auth::user()->name == 'ppic' || Auth::user()->name == 'pc')
+                    <a href="{{asset("/sj_balik")}}" class="btn btn-md btn-warning">Scan Disini >> SJ BALIK & Ke Finance</a>
+                    <br><br>
+                    @elseif(Auth::user()->name == 'finance')                
+                    <a href="{{asset("/terima_finance")}}" class="btn btn-md btn-success">FINANCE</a>
+                    <br><br>
+                    @endif
                     <form method='post' action='{{asset('filter_view')}}' class="pull-right">                    
                     {{ csrf_field() }}
                         <div class='row'>

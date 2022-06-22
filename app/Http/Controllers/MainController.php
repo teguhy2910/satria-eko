@@ -84,15 +84,15 @@ class MainController extends Controller
                     'doaii' => $value->doaii,                    
                     ];
                 }
-                #dd($insert);
+                $insert=array_filter($insert, function($value) { return !is_null($value['doaii']) && $value['doaii'] !== ''; });
                 if(!empty($insert)){
                     foreach($insert as $row) {
                     if($row['tanggal_delivery']!=null){
-                    sj::create($row);
+                    sj::create($row);                    
                     }
                     }
-$total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
-                    Session::flash('message',$total_upload ); 
+                    $total_upload="Sukses Scan SJ, Total Upload=".count($insert)." SJ";
+                    Session::flash('message', $total_upload); 
                 }else{
                     Session::flash('danger', 'Gagal Upload SJ');
                 }
@@ -101,6 +101,7 @@ $total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
         Session::flash('danger', 'Something Wrong Contact Administrator'); 
         return redirect('/sj/dashboard');
     }
+
     public function update_sj_balik_ppic_upload()
     {
         if(Input::hasFile('update_sj_balik_ppic')){
@@ -108,23 +109,29 @@ $total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
             $data = Excel::load($path)->get();
             if(!empty($data) && $data->count()){
                 foreach ($data as $key => $value) {
+                    $cek=sj::where('doaii',$value->doaii)->whereNotNull('doaii')->get();
+                    if($cek->toArray()!=null){
                     $insert[] = 
                     [
                     'doaii' => $value->doaii,
                     ];
-                }
-                #dd($data);               
-                if(!empty($insert)){
-                    $cek=sj::where('doaii',$insert)->whereNotNull('sj_balik')->get();
-                    if($cek->toArray()==null){
-                    foreach($insert as $row) {
-                        sj::where('doaii',$row)->update(['sj_balik' =>\Carbon\Carbon::now()]);
                     }
-$total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
-                    Session::flash('message',$total_upload );
-                    #Session::flash('message', 'Sukses Upload SJ');
-                }else{
-                    Session::flash('danger', 'Gagal Upload SJ Sudah Balik'); 
+                }                
+                $insert=array_filter($insert, function($value) { return !is_null($value['doaii']) && $value['doaii'] !== ''; });     
+                $no=0;
+                $noo=0;
+                if(!empty($insert)){                    
+                    foreach($insert as $row) {
+                    $cek=sj::where('doaii',$row)->whereNotNull('sj_balik')->first();
+                    if($cek['doaii']===null){                    
+                    $no++;
+                    sj::where('doaii',$row)->update(['sj_balik' =>\Carbon\Carbon::now()]);                                    
+                    $total_upload="Sukses Scan SJ, Total Upload=".$no." SJ";
+                    Session::flash('message', $total_upload);    
+                    }else{
+                        $noo++;
+                        Session::flash('danger', 'Gagal Upload ' .$noo. ' SJ Sudah Balik'); 
+                    }                                                            
                 } 
                 }else{
                     Session::flash('danger', 'Gagal Upload SJ');
@@ -134,7 +141,8 @@ $total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
         Session::flash('danger', 'Something Wrong Contact Administrator'); 
         }
         return redirect('/sj/dashboard');
-    }    
+    }  
+   
     public function sj_balik()
     {
         return view('sj_balik');
@@ -167,20 +175,31 @@ $total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
             $data = Excel::load($path)->get();
             if(!empty($data) && $data->count()){
                 foreach ($data as $key => $value) {
+                    $cek=sj::where('doaii',$value->doaii)->whereNotNull('doaii')->get();
+                    if($cek->toArray()!=null){
                     $insert[] = 
                     [
                     'doaii' => $value->doaii,
                     ];
+                    }
                 }
-                #dd($data);               
+                $no=0;
+                $noo=0;
+                $insert=array_filter($insert, function($value) { return !is_null($value['doaii']) && $value['doaii'] !== ''; });
                 if(!empty($insert)){
                     foreach($insert as $row) {
-                        sj::where('doaii',$row)->update(['terima_finance' =>\Carbon\Carbon::now()]);                     
-                }
-$total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
-                    Session::flash('message',$total_upload );
-#Session::flash('message', 'Sukses Upload SJ');
-}else{
+                        $cek=sj::where('doaii',$row)->whereNotNull('terima_finance')->first();
+                        if($cek['doaii']===null){                    
+                        $no++;
+                        sj::where('doaii',$row)->update(['terima_finance' =>\Carbon\Carbon::now()]);                                    
+                        $total_upload="Sukses Scan SJ, Total Upload=".$no." SJ";
+                        Session::flash('message', $total_upload);    
+                        }else{
+                            $noo++;
+                            Session::flash('danger', 'Gagal Upload ' .$noo. ' SJ Sudah Terima Finance'); 
+                        }                                                            
+                    }                                
+            }else{
                     Session::flash('danger', 'Gagal Upload SJ');
                 }
             }
@@ -189,6 +208,7 @@ $total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
         }
         return redirect('/sj/dashboard');
     }
+
     public function terima_finance_store()
     {
         sj::where('doaii', $_POST['doaii'])
@@ -223,4 +243,14 @@ $total_upload="Sukses Upload SJ, Total Upload=".count($insert)." SJ";
         sj::create(request()->all());
         redirect('create/sj');
     }
+    public function download_sj()
+    {
+        $sj = sj::all();
+        Excel::create('sj', function($excel) use($sj) {
+            $excel->sheet('Sheet 1', function($sheet) use($sj) {
+                $sheet->fromArray($sj);
+            });
+        })->export('xlsx');
+    }
+
 }

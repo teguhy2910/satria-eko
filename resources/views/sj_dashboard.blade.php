@@ -10,7 +10,7 @@
                 </ul>
                 <div class="panel-body">
                     @if(Auth::user()->name == 'ppic' || Auth::user()->name == 'pc')
-                    <a href="{{asset("/sj_balik")}}" class="btn btn-md btn-warning">SJ BALIK</a>
+                    <a href="{{asset("/sj_balik")}}" class="btn btn-md btn-warning">Scan Disini >> SJ BALIK & Ke Finance</a>
                     <br><br>
                     @elseif(Auth::user()->name == 'finance')                
                     <a href="{{asset("/terima_finance")}}" class="btn btn-md btn-success">FINANCE</a>
