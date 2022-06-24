@@ -24,3 +24,4 @@ Route::get('/edit_sj/{id}','MainController@sj_update');
 Route::post('/edit_sj/{id}','MainController@sj_update_store');
 Route::get('/create/sj','MainController@create_sj');
 Route::post('/create/sj','MainController@create_sj_store');
+Route::get('/download_sj','MainController@download_sj');
