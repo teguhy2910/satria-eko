@@ -22,7 +22,6 @@ window.Laravel = <?php echo json_encode([
 <link rel="stylesheet" type="text/css" href="{{asset('/css/AdminLTE.min.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('/css/navigasi.css')}}">
 <link rel="stylesheet" type="text/css" href="{{asset('css/sweetalert.css')}}">
-<!-- <script src="http://momentjs.com/downloads/moment.min.js"></script> -->
 <style>
   .btn2 {
   border: 2px solid white;
@@ -68,6 +67,7 @@ window.Laravel = <?php echo json_encode([
 @else
 <li><a href="{{asset('/sj/dashboard')}}"><font color="white" face="calibri" size="3px"> SJ On Progress</font></a></li>
 <li><a href="{{asset('dashboard')}}"><font color="white" face="calibri" size="3px"> ALL SJ</font></a></li>
+<li><a href="{{asset('download_sj')}}"><font color="white" face="calibri" size="3px"> Download ALL SJ</font></a></li>
 @if(Auth::user()->name == 'ppic' || Auth::user()->name == 'pc')
 <li><a href="{{asset('upload/sj/dashboard')}}"><font color="white" face="calibri" size="3px"> 
 <button class="btn2">Upload SJ</button></font></a>

@@ -115,22 +115,35 @@ class MainController extends Controller
                     [
                     'doaii' => $value->doaii,
                     ];
-                    }
-                }                
+                    }else{
+                    $error[] = 
+                    [
+                    'doaii' => $value->doaii,
+                    ];  
+                    }                    
+                } 
                 $insert=array_filter($insert, function($value) { return !is_null($value['doaii']) && $value['doaii'] !== ''; });     
                 $no=0;
                 $noo=0;
                 if(!empty($insert)){                    
                     foreach($insert as $row) {
-                    $cek=sj::where('doaii',$row)->whereNotNull('sj_balik')->first();
-                    if($cek['doaii']===null){                    
+                    $cek=sj::where('doaii',$row)->first();
+                    if($cek['sj_balik']===null){                    
                     $no++;
-                    sj::where('doaii',$row)->update(['sj_balik' =>\Carbon\Carbon::now()]);                                    
+                    $sukses_upload[] = 
+                    [
+                    'doaii' => $cek['doaii'],
+                    ];
+                    sj::where('doaii',$row)->update(['sj_balik' =>\Carbon\Carbon::now()]);  
                     $total_upload="Sukses Scan SJ, Total Upload=".$no." SJ";
                     Session::flash('message', $total_upload);    
                     }else{
+                        $sudah_balik[] = 
+                            [
+                            'doaii' => $cek['doaii'],
+                            ];
                         $noo++;
-                        Session::flash('danger', 'Gagal Upload ' .$noo. ' SJ Sudah Balik'); 
+                        Session::flash('danger', 'Gagal Upload ' .$noo. ' SJ Sudah Balik');  
                     }                                                            
                 } 
                 }else{
@@ -139,6 +152,67 @@ class MainController extends Controller
             }
         }else{
         Session::flash('danger', 'Something Wrong Contact Administrator'); 
+        }
+        if(!empty($error)&&!empty($sudah_balik)&&!empty($sukses_upload)){
+        Excel::create('SJ Error', function($excel) use($error,$sudah_balik,$sukses_upload) {
+            $excel->sheet('SJ Tidak Ada Di Master', function($sheet) use($error) {
+                $sheet->fromArray($error);
+            });
+            $excel->sheet('SJ Sudah Balik', function($sheet) use($sudah_balik) {
+                $sheet->fromArray($sudah_balik);
+            });
+            $excel->sheet('SJ Sukses Upload', function($sheet) use($sukses_upload) {
+                $sheet->fromArray($sukses_upload);
+            });
+
+        })->export('xlsx');
+        }elseif(!empty($error)&&!empty($sukses_upload)){
+            Excel::create('SJ Error', function($excel) use($error,$sukses_upload) {
+                $excel->sheet('SJ Tidak Ada Di Master', function($sheet) use($error) {
+                    $sheet->fromArray($error);
+                });
+                $excel->sheet('SJ Sukses Upload', function($sheet) use($sukses_upload) {
+                    $sheet->fromArray($sukses_upload);
+                });
+    
+            })->export('xlsx');
+            }
+            elseif(!empty($sudah_balik)&&!empty($sukses_upload)){
+                Excel::create('SJ Error', function($excel) use($sudah_balik,$sukses_upload) {
+                    $excel->sheet('SJ Sudah Balik', function($sheet) use($sudah_balik,$sukses_upload) {
+                        $sheet->fromArray($sudah_balik);
+                    });
+                    $excel->sheet('SJ Sukses Upload', function($sheet) use($sukses_upload) {
+                        $sheet->fromArray($sukses_upload);
+                    });
+        
+                })->export('xlsx');
+                }
+        elseif(!empty($error)&&!empty($sudah_balik)){
+            Excel::create('SJ Error', function($excel) use($error,$sudah_balik) {
+                $excel->sheet('SJ Tidak Ada Di Master', function($sheet) use($error,$sudah_balik) {
+                    $sheet->fromArray($error);
+                });
+                $excel->sheet('SJ Sudah Balik', function($sheet) use($sudah_balik) {
+                    $sheet->fromArray($sudah_balik);
+                });
+    
+            })->export('xlsx');
+            }
+        elseif(!empty($error)){
+            Excel::create('SJ Error', function($excel) use($error) {
+                $excel->sheet('SJ Tidak Ada Di Master', function($sheet) use($error) {
+                    $sheet->fromArray($error);
+                });
+    
+            })->export('xlsx'); 
+        }elseif(!empty($sudah_balik)){
+            Excel::create('SJ Error', function($excel) use($sudah_balik) {
+                $excel->sheet('SJ Sudah Balik', function($sheet) use($sudah_balik) {
+                    $sheet->fromArray($sudah_balik);
+                });
+    
+            })->export('xlsx'); 
         }
         return redirect('/sj/dashboard');
     }  
@@ -181,30 +255,104 @@ class MainController extends Controller
                     [
                     'doaii' => $value->doaii,
                     ];
-                    }
-                }
+                    }else{
+                    $error[] = 
+                    [
+                    'doaii' => $value->doaii,
+                    ];  
+                    }                    
+                } 
+                $insert=array_filter($insert, function($value) { return !is_null($value['doaii']) && $value['doaii'] !== ''; });     
                 $no=0;
                 $noo=0;
-                $insert=array_filter($insert, function($value) { return !is_null($value['doaii']) && $value['doaii'] !== ''; });
-                if(!empty($insert)){
+                if(!empty($insert)){                    
                     foreach($insert as $row) {
-                        $cek=sj::where('doaii',$row)->whereNotNull('terima_finance')->first();
-                        if($cek['doaii']===null){                    
-                        $no++;
-                        sj::where('doaii',$row)->update(['terima_finance' =>\Carbon\Carbon::now()]);                                    
-                        $total_upload="Sukses Scan SJ, Total Upload=".$no." SJ";
-                        Session::flash('message', $total_upload);    
-                        }else{
-                            $noo++;
-                            Session::flash('danger', 'Gagal Upload ' .$noo. ' SJ Sudah Terima Finance'); 
-                        }                                                            
-                    }                                
-            }else{
+                    $cek=sj::where('doaii',$row)->first();
+                    if($cek['terima_finance']===null){                    
+                    $no++;
+                    $sukses_upload[] = 
+                    [
+                    'doaii' => $cek['doaii'],
+                    ];
+                    sj::where('doaii',$row)->update(['terima_finance' =>\Carbon\Carbon::now()]);  
+                    $total_upload="Sukses Scan SJ, Total Upload=".$no." SJ";
+                    Session::flash('message', $total_upload);    
+                    }else{
+                        $terima_finance[] = 
+                            [
+                            'doaii' => $cek['doaii'],
+                            ];
+                        $noo++;
+                        Session::flash('danger', 'Gagal Upload ' .$noo. ' SJ Sudah Kirim Finance');  
+                    }                                                            
+                } 
+                }else{
                     Session::flash('danger', 'Gagal Upload SJ');
                 }
             }
         }else{
         Session::flash('danger', 'Something Wrong Contact Administrator'); 
+        }
+        if(!empty($error)&&!empty($terima_finance)&&!empty($sukses_upload)){
+        Excel::create('SJ Error', function($excel) use($error,$terima_finance,$sukses_upload) {
+            $excel->sheet('SJ Tidak Ada Di Master', function($sheet) use($error) {
+                $sheet->fromArray($error);
+            });
+            $excel->sheet('SJ Sudah Terima Finance', function($sheet) use($terima_finance) {
+                $sheet->fromArray($terima_finance);
+            });
+            $excel->sheet('SJ Sukses Upload', function($sheet) use($sukses_upload) {
+                $sheet->fromArray($sukses_upload);
+            });
+
+        })->export('xlsx');
+        }elseif(!empty($error)&&!empty($sukses_upload)){
+            Excel::create('SJ Error', function($excel) use($error,$sukses_upload) {
+                $excel->sheet('SJ Tidak Ada Di Master', function($sheet) use($error) {
+                    $sheet->fromArray($error);
+                });
+                $excel->sheet('SJ Sukses Upload', function($sheet) use($sukses_upload) {
+                    $sheet->fromArray($sukses_upload);
+                });
+    
+            })->export('xlsx');
+            }
+            elseif(!empty($terima_finance)&&!empty($sukses_upload)){
+                Excel::create('SJ Error', function($excel) use($terima_finance,$sukses_upload) {
+                    $excel->sheet('SJ Sudah Terima Finance', function($sheet) use($terima_finance,$sukses_upload) {
+                        $sheet->fromArray($terima_finance);
+                    });
+                    $excel->sheet('SJ Sukses Upload', function($sheet) use($sukses_upload) {
+                        $sheet->fromArray($sukses_upload);
+                    });
+        
+                })->export('xlsx');
+                }
+        elseif(!empty($error)&&!empty($terima_finance)){
+            Excel::create('SJ Error', function($excel) use($error,$terima_finance) {
+                $excel->sheet('SJ Tidak Ada Di Master', function($sheet) use($error,$terima_finance) {
+                    $sheet->fromArray($error);
+                });
+                $excel->sheet('SJ Sudah Terima Finance', function($sheet) use($terima_finance) {
+                    $sheet->fromArray($terima_finance);
+                });
+    
+            })->export('xlsx');
+            }
+        elseif(!empty($error)){
+            Excel::create('SJ Error', function($excel) use($error) {
+                $excel->sheet('SJ Tidak Ada Di Master', function($sheet) use($error) {
+                    $sheet->fromArray($error);
+                });
+    
+            })->export('xlsx'); 
+        }elseif(!empty($terima_finance)){
+            Excel::create('SJ Error', function($excel) use($terima_finance) {
+                $excel->sheet('SJ Sudah Terima Finance', function($sheet) use($terima_finance) {
+                    $sheet->fromArray($terima_finance);
+                });
+    
+            })->export('xlsx'); 
         }
         return redirect('/sj/dashboard');
     }
