@@ -1,4 +1,4 @@
-<title>All New SATRIA</title>
+<title>ALL New SATRIA</title>
 
 <!-- Font Awesome -->
 <link
@@ -46,7 +46,7 @@ height: 100%;
         <img src="img/aiia.png" width="100px" alt=""> 
         </center> 
         <div class="divider d-flex align-items-center my-4">          
-            <p class="text-center fw-bold mx-3 mb-0">All New SATRIA</p>
+            <p class="text-center fw-bold mx-3 mb-0">ALL New SATRIA</p>
           </div>
 
           <!-- Email input -->
@@ -78,7 +78,7 @@ height: 100%;
     class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
     <!-- Copyright -->
     <div class="text-white mb-3 mb-md-0">
-      Copyright All New SATRIA © 2022. All rights reserved.
+      Copyright ALL New SATRIA © 2022. All rights reserved.
     </div>
     <!-- Copyright -->
   </div>
