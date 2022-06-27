@@ -389,7 +389,7 @@ class MainController extends Controller
     public function create_sj_store()
     {
         sj::create(request()->all());
-        redirect('create/sj');
+        return redirect('create/sj');
     }
     public function download_sj()
     {
