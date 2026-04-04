@@ -2,9 +2,10 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
-
-class sj extends Model
+/**
+ * @deprecated Use App\SuratJalan instead.
+ * This alias is kept for backward compatibility.
+ */
+class sj extends SuratJalan
 {
-    protected $guarded = [];  
 }

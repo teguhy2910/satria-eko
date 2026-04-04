@@ -1,4 +1,4 @@
-# Use PHP 7.4 with Apache (Laravel 5.3 requires PHP >=5.6.4)
+# Use PHP 7.4 with Apache (Laravel 5.5 requires PHP >=7.0)
 FROM php:7.4-apache
 
 # Install system dependencies
@@ -34,7 +34,9 @@ WORKDIR /var/www/html
 COPY . .
 
 # Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+RUN composer config audit.block-insecure false \
+    && composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts \
+    && composer dump-autoload --optimize
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \

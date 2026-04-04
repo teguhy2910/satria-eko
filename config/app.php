@@ -140,9 +140,8 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
-        UxWeb\SweetAlert\SweetAlertServiceProvider::class,
-        'Yajra\Datatables\DatatablesServiceProvider',
-        'Maatwebsite\Excel\ExcelServiceProvider', 
+        Yajra\DataTables\DataTablesServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -231,8 +230,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Alert' => UxWeb\SweetAlert\SweetAlert::class,
         'Input' => Illuminate\Support\Facades\Input::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 
 ];
