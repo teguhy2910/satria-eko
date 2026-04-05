@@ -8,7 +8,7 @@ use App\sj;
 use Carbon\Carbon;
 use Excel;
 use Illuminate\Support\Facades\Session;
-use Datatables;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 
 class MainController extends Controller
@@ -73,15 +73,15 @@ class MainController extends Controller
     {        
         if(Input::hasFile('sj')){
             $path = Input::file('sj')->getRealPath();
-            $data = Excel::load($path)->get();
-            if(!empty($data) && $data->count()){
+            $data = Excel::toArray(new \stdClass(), Input::file('sj'))[0];
+            if(!empty($data)){
                 foreach ($data as $key => $value) {
                     $insert[] = 
                     [
-                    'tanggal_delivery' => $value->tanggal_delivery,
-                    'customer_name' => $value->customer_name,
-                    'pdsnumber' => $value->pdsnumber,
-                    'doaii' => $value->doaii,                    
+                    'tanggal_delivery' => $value['tanggal_delivery'] ?? null,
+                    'customer_name' => $value['customer_name'] ?? null,
+                    'pdsnumber' => $value['pdsnumber'] ?? null,
+                    'doaii' => $value['doaii'] ?? null,                    
                     ];
                 }
                 $insert=array_filter($insert, function($value) { return !is_null($value['doaii']) && $value['doaii'] !== ''; });
@@ -106,19 +106,19 @@ class MainController extends Controller
     {
         if(Input::hasFile('update_sj_balik_ppic')){
             $path = Input::file('update_sj_balik_ppic')->getRealPath();
-            $data = Excel::load($path)->get();
-            if(!empty($data) && $data->count()){
+            $data = Excel::toArray(new \stdClass(), Input::file('update_sj_balik_ppic'))[0];
+            if(!empty($data)){
                 foreach ($data as $key => $value) {
-                    $cek=sj::where('doaii',$value->doaii)->whereNotNull('doaii')->get();
+                    $cek=sj::where('doaii',$value['doaii'] ?? null)->whereNotNull('doaii')->get();
                     if($cek->toArray()!=null){
                     $insert[] = 
                     [
-                    'doaii' => $value->doaii,
+                    'doaii' => $value['doaii'] ?? null,
                     ];
                     }else{
                     $error[] = 
                     [
-                    'doaii' => $value->doaii,
+                    'doaii' => $value['doaii'] ?? null,
                     ];  
                     }                    
                 } 

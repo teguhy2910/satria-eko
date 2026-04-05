@@ -1,31 +1,48 @@
 @extends('layouts.app')
 @section('content')
 <div class="container-full">
-    <div class="row">        
+    <div class="row">
         <div class="col-md-12">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                <li><a href="{{asset('sj/dashboard')}}"><big><font face="calibri">Surat Jalan </font></big> <span class="label label-warning"></span></a></li>
-                <li class="active"><a href={{asset("/data_outstanding_sj_7_day")}}><font face="calibri" color="black"><big><big><big>Outstanding SJ > 7 Hari </big></big></big> </font> <span class="label label-success"></span></a></li>
+                    <li><a href="{{ url('/sj/dashboard') }}"><big><span style="font-family: calibri;">Surat Jalan</span></big> <span class="label label-warning"></span></a></li>
+                    <li class="active"><a><span style="font-family: calibri; color: black;"><big><big><big>Outstanding SJ > 7 Hari</big></big></big></span> <span class="label label-success"></span></a></li>
                 </ul>
-                <div class="panel-body">                    
+                <div class="panel-body">
                     <table id="sj_ppic_more_7_days" class="table table-bordered table-condensed dt-responsive">
-                <thead> 
-                <tr class="info">
-                <th><small>TANGGAL WAKTU UPLOAD</small></th>    
-                <th><small>TANGGAL_DELIVERY</small></th>    
-                <th><small>CUSTOMER_NAME</small></th>
-                <th><small>PDSNUMBER</small></th>
-                <th><small>DOAII</small></th>
-                <th><small>SJ BALIK</small></th>
-                <th><small>FINANCE</small></th>           
-            </tr>
-        </thead>                    
-            </table>
+                        <thead>
+                            <tr class="info">
+                                <th><small>TANGGAL WAKTU UPLOAD</small></th>
+                                <th><small>TANGGAL_DELIVERY</small></th>
+                                <th><small>CUSTOMER_NAME</small></th>
+                                <th><small>PDSNUMBER</small></th>
+                                <th><small>DOAII</small></th>
+                                <th><small>SJ BALIK</small></th>
+                                <th><small>FINANCE</small></th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @endsection
+
+@push('scripts')
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#sj_ppic_more_7_days').DataTable({
+        lengthMenu: [[10, 25, 50, -1], ['10', '25', '50', 'Show all']],
+        dom: 'lBfrtip',
+        buttons: ['copyHtml5', 'excelHtml5', 'pdfHtml5', 'csvHtml5'],
+        processing: true,
+        ajax: {
+            url: '{{ url("data_outstanding_sj_7_day") }}',
+            type: 'POST',
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+        }
+    });
+});
+</script>
+@endpush

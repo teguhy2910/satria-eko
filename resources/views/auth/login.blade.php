@@ -49,18 +49,59 @@ height: 100%;
             <p class="text-center fw-bold mx-3 mb-0">ALL New SATRIA</p>
           </div>
 
+          <!-- Display errors -->
+          @if ($errors->any())
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @foreach ($errors->all() as $error)
+              <strong>{{ $error }}</strong><br>
+            @endforeach
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          @endif
+          
+          <!-- Display session messages -->
+          @if (session('status'))
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{ session('status') }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          @endif
+          
+          @if (session('error'))
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>{{ session('error') }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          @endif
+
           <!-- Email input -->
           <div class="form-outline mb-4">
-            <input type="text" name="name" id="form3Example3" class="form-control form-control-lg"
-              placeholder="Enter a valid Username" />
+            <input type="text" name="name" id="form3Example3" class="form-control form-control-lg @error('name') is-invalid @enderror"
+              placeholder="Enter a valid Username" value="{{ old('name') }}" />
             <label class="form-label" for="form3Example3">Username</label>
+            @error('name')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
           </div>
 
           <!-- Password input -->
           <div class="form-outline mb-3">
-            <input type="password" name="password" id="form3Example4" class="form-control form-control-lg"
+            <input type="password" name="password" id="form3Example4" class="form-control form-control-lg @error('password') is-invalid @enderror"
               placeholder="Enter password" />
             <label class="form-label" for="form3Example4">Password</label>
+            @error('password')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
           </div>          
 
           <div class="text-center text-lg-start mt-4 pt-2">
@@ -78,7 +119,7 @@ height: 100%;
     class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
     <!-- Copyright -->
     <div class="text-white mb-3 mb-md-0">
-      Copyright ALL New SATRIA © 2022. All rights reserved.
+      Copyright ALL New SATRIA © 2026. All rights reserved.
     </div>
     <!-- Copyright -->
   </div>
