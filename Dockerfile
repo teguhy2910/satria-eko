@@ -1,55 +1,63 @@
-# Use PHP 7.4 with Apache (Laravel 5.5 requires PHP >=7.0)
-FROM php:7.4-apache
+# Menggunakan image PHP 8.1 FPM dengan Alpine
+FROM php:8.1-fpm-alpine
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
+RUN apk add --no-cache \
+    nginx \
+    supervisor \
     curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    libzip-dev \
-    libicu-dev \
-    g++ \
-    && docker-php-ext-install \
-    pdo_mysql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd \
-    intl \
-    zip \
-    && a2enmod rewrite
+    git \
+    libpng \
+    libjpeg-turbo \
+    freetype \
+    libzip \
+    mysql-client \
+    && apk add --no-cache --virtual .build-deps \
+        libpng-dev \
+        libjpeg-turbo-dev \
+        freetype-dev \
+        libzip-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd zip pdo_mysql mysqli \
+    && apk del --no-cache .build-deps
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Copy Nginx configuration
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Copy entrypoint script
+COPY docker/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy aplikasi
 COPY . .
 
-# Install PHP dependencies
-RUN composer config audit.block-insecure false \
-    && composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts \
-    && composer dump-autoload --optimize
+# Install dependencies (tanpa dev dependencies untuk production)
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+
+# Optimize Laravel untuk production
+RUN cp .env.example .env \
+    && php artisan key:generate \
+    && php artisan storage:link
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+RUN mkdir -p /var/www/html/storage/framework/cache \
+    && chown -R www-data:www-data /var/www/html
 
-# Copy Apache configuration
-COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
-
-# Generate application key if not present
-RUN if [ ! -f .env ]; then cp .env.example .env; fi \
-    && php artisan key:generate
+# Set PHP production configuration
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && echo "memory_limit = 256M" >> "$PHP_INI_DIR/conf.d/memory-limit.ini" \
+    && echo "upload_max_filesize = 50M" >> "$PHP_INI_DIR/conf.d/upload.ini" \
+    && echo "post_max_size = 50M" >> "$PHP_INI_DIR/conf.d/upload.ini" \
+    && echo "max_execution_time = 300" >> "$PHP_INI_DIR/conf.d/execution-time.ini" \
+    && echo "opcache.enable=1" >> "$PHP_INI_DIR/conf.d/opcache.ini"
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
