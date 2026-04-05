@@ -29,9 +29,25 @@ chown -R www-data:www-data /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage
 chmod -R 775 /var/www/html/bootstrap/cache
 
-# Run database migrations
-echo "Running database migrations..."
-php artisan migrate --force
+# Wait for database to be ready (only if DB_HOST is set)
+if [ -n "$DB_HOST" ] && [ -z "$SKIP_MIGRATIONS" ]; then
+    echo "Waiting for database to be ready..."
+    for i in {1..30}; do
+        if php artisan tinker --execute="try { DB::connection()->getPdo(); echo 'Database connected!'; exit(0); } catch (Exception \$e) { echo 'Attempt ' . \$i . ': ' . \$e->getMessage() . PHP_EOL; exit(1); }" 2>/dev/null; then
+            echo "Database is ready!"
+            break
+        fi
+        sleep 2
+    done
+fi
+
+# Run database migrations (skip if SKIP_MIGRATIONS is set)
+if [ -z "$SKIP_MIGRATIONS" ]; then
+    echo "Running database migrations..."
+    php artisan migrate --force || echo "Migration failed. Continuing..."
+else
+    echo "Skipping database migrations (SKIP_MIGRATIONS is set)"
+fi
 
 # Start supervisor
 exec "$@"
